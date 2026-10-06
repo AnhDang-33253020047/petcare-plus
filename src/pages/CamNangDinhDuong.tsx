@@ -273,14 +273,15 @@ export default function CamNangDinhDuong() {
         </div>
       </div>
 
-      {/* POP-UP (MODAL) HIỂN THỊ CHI TIẾT DINH DƯỠNG KHI CLICK */}
+      {/* POP-UP (MODAL) HIỂN THỊ CHI TIẾT DINH DƯỠNG (ĐÃ TỐI ƯU GIAO DIỆN MOBILE) */}
       {selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm transition-opacity">
-          <div className="bg-white rounded-3xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row relative animate-in fade-in zoom-in-95 duration-200">
-            {/* Nút Đóng */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-gray-900/60 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-3xl w-full max-w-3xl max-h-[85vh] md:max-h-[90vh] shadow-2xl relative flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Nút Đóng luôn ghim cố định ở góc trên bên phải */}
             <button
               onClick={() => setSelectedProduct(null)}
-              className="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition-colors z-10"
+              className="absolute top-3 right-3 md:top-4 md:right-4 w-9 h-9 md:w-10 md:h-10 bg-white/90 hover:bg-gray-100 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-700 transition-colors z-30 shadow-md border border-gray-100"
+              aria-label="Đóng cửa sổ"
             >
               <svg
                 className="w-5 h-5"
@@ -291,69 +292,72 @@ export default function CamNangDinhDuong() {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth="2"
+                  strokeWidth="2.5"
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
             </button>
 
-            {/* Cột Trái: Ảnh sản phẩm */}
-            <div className="w-full md:w-5/12 bg-gray-50 flex items-center justify-center p-8">
-              <img
-                src={selectedProduct.image}
-                alt={selectedProduct.name}
-                className="w-full h-auto object-contain max-h-[300px] md:max-h-[400px]"
-                style={{ mixBlendMode: "multiply" }}
-              />
-            </div>
-
-            {/* Cột Phải: Phân tích thành phần */}
-            <div className="w-full md:w-7/12 p-6 md:p-8 flex flex-col">
-              <div className="text-sm font-bold text-orange-500 tracking-wide mb-2">
-                {selectedProduct.brand}
+            {/* Khung nội dung cho phép cuộn mượt mà */}
+            <div className="flex flex-col md:flex-row w-full overflow-y-auto">
+              {/* Cột Trái: Ảnh sản phẩm (thu nhỏ gọn gàng trên mobile) */}
+              <div className="w-full md:w-5/12 bg-gray-50/80 flex items-center justify-center p-4 md:p-8 shrink-0">
+                <img
+                  src={selectedProduct.image}
+                  alt={selectedProduct.name}
+                  className="w-auto h-36 sm:h-44 md:h-auto md:w-full object-contain max-h-[170px] md:max-h-[360px]"
+                  style={{ mixBlendMode: "multiply" }}
+                />
               </div>
-              <h2
-                className="text-2xl font-black text-gray-900 mb-6 leading-tight"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {selectedProduct.name}
-              </h2>
 
-              <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-5 mb-6">
-                <h4 className="font-bold text-emerald-800 mb-2 flex items-center gap-2">
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Phân tích y khoa
+              {/* Cột Phải: Phân tích thành phần */}
+              <div className="w-full md:w-7/12 p-5 md:p-8 flex flex-col">
+                <div className="text-xs md:text-sm font-bold text-orange-500 tracking-wide mb-1 md:mb-2">
+                  {selectedProduct.brand}
+                </div>
+                <h2
+                  className="text-lg md:text-2xl font-black text-gray-900 mb-4 md:mb-6 leading-tight pr-6 md:pr-0"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {selectedProduct.name}
+                </h2>
+
+                <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 md:p-5 mb-4 md:mb-6">
+                  <h4 className="font-bold text-emerald-800 mb-1.5 md:mb-2 flex items-center gap-2 text-sm md:text-base">
+                    <svg
+                      className="w-5 h-5 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    Phân tích y khoa
+                  </h4>
+                  <p className="text-emerald-700 text-xs md:text-sm leading-relaxed">
+                    {selectedProduct.analysis}
+                  </p>
+                </div>
+
+                <h4 className="font-bold text-gray-900 mb-3 text-sm md:text-base">
+                  Thành phần dinh dưỡng cốt lõi:
                 </h4>
-                <p className="text-emerald-700 text-sm leading-relaxed">
-                  {selectedProduct.analysis}
-                </p>
-              </div>
-
-              <h4 className="font-bold text-gray-900 mb-4">
-                Thành phần dinh dưỡng cốt lõi:
-              </h4>
-              <div className="space-y-3 flex-grow">
-                {selectedProduct.nutrition.map((nutri: any, idx: number) => (
-                  <div
-                    key={idx}
-                    className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0"
-                  >
-                    <span className="text-gray-600">{nutri.label}</span>
-                    <span className="font-black text-gray-900">
-                      {nutri.value}
-                    </span>
-                  </div>
-                ))}
+                <div className="space-y-2.5 flex-grow">
+                  {selectedProduct.nutrition.map((nutri: any, idx: number) => (
+                    <div
+                      key={idx}
+                      className="flex justify-between items-center py-1.5 md:py-2 border-b border-gray-100 last:border-0 text-sm"
+                    >
+                      <span className="text-gray-600">{nutri.label}</span>
+                      <span className="font-black text-gray-900">
+                        {nutri.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
