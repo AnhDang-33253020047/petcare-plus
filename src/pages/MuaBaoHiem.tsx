@@ -191,13 +191,13 @@ export default function MuaBaoHiem() {
           <div className="mt-auto w-full flex flex-col items-center gap-3">
             <button
               onClick={() => setSelectedPlanDetails(plan)}
-              className="w-fit px-8 py-2.5 text-sm font-semibold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors"
+              className="w-fit px-6 py-2.5 text-sm font-semibold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors"
             >
               Xem chi tiết quyền lợi
             </button>
             <button
               onClick={() => handleRegisterClick(plan)}
-              className="w-fit px-8 py-2.5 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors shadow-md hover:shadow-lg transform active:scale-95"
+              className="w-fit px-6 py-2.5 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors shadow-md hover:shadow-lg transform active:scale-95"
             >
               Đăng ký khám duyệt hồ sơ
             </button>
