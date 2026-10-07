@@ -698,14 +698,14 @@ export default function DatLichHen() {
               <button
                 onClick={() => {
                   setShowSuccessModal(false)
-                  navigate('/')
+                  navigate('/dat-lich-hen')
                 }}
-                className="w-fit mx-auto px-12 py-3.5 rounded-xl text-white font-bold text-base transition-transform active:scale-[0.98] shadow-md"
+                className="w-fit mx-auto px-10 py-3.5 rounded-xl text-white font-bold text-base transition-transform active:scale-[0.98] shadow-md"
                 style={{
                   background: "linear-gradient(135deg, #059669, #047857)",
                 }}
               >
-                Trở về trang chủ
+                Đặt lịch khám mới
               </button>
             </div>
           </div>
