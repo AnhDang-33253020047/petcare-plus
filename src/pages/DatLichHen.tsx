@@ -697,10 +697,20 @@ export default function DatLichHen() {
 
               <button
                 onClick={() => {
+                  // 1. Đóng popup
                   setShowSuccessModal(false)
-                  navigate('/dat-lich-hen')
+
+                  // 2. Xóa lệnh navigate đi rồi thay bằng các dòng reset trắng form này
+                  setSelectedClinic("")
+                  setSelectedService("")
+                  setSelectedDate("")
+                  setSelectedHour("")
+                  setSelectedMinute("")
+
+                  // 3. Cuộn mượt mà lên đầu trang để sẵn sàng đặt lịch mới
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
-                className="w-fit mx-auto px-10 py-3.5 rounded-xl text-white font-bold text-base transition-transform active:scale-[0.98] shadow-md"
+                className="w-fit mx-auto px-9 py-3.5 rounded-xl text-white font-bold text-base transition-transform active:scale-[0.98] shadow-md"
                 style={{
                   background: "linear-gradient(135deg, #059669, #047857)",
                 }}
