@@ -209,17 +209,17 @@ export default function Home() {
               {
                 n: "01",
                 t: "Quét mã PetID",
-                d: "Xác thực thông tin và tra cứu hạn mức bảo hiểm tức thì ngay tại quầy lễ tân",
+                d: "Xác thực thông tin và tra cứu hạn mức bảo hiểm tức thì ngay tại phòng khám đối tác",
               },
               {
                 n: "02",
-                t: "Khám & Điều trị",
-                d: "Bác sĩ thú y tại mạng lưới đối tác chẩn đoán và điều trị theo phác đồ y khoa",
+                t: "Khám & điều trị",
+                d: "Ngay tại mạng lưới phòng khám đối tác nhanh chóng và dễ dàng hơn bao giờ hết",
               },
               {
                 n: "03",
                 t: "Bảo lãnh tự động",
-                d: "Hệ thống đối soát thông minh và thanh toán thẳng viện phí — bạn không cần ứng trước",
+                d: "Hệ thống đối soát thông minh và thanh toán thẳng viện phí — không cần ứng tiền trước",
               },
             ].map((s) => (
               <div
