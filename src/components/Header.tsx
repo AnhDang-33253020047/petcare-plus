@@ -561,7 +561,7 @@ export default function Header() {
                       </label>
                       <span className="text-emerald-600 font-semibold cursor-pointer hover:text-emerald-700">Quên mật khẩu?</span>
                     </div>
-                    <button className="w-full py-2.5 mt-2 text-white font-bold rounded-lg shadow-sm" style={{ background: "#f97316" }}>
+                    <button className="w-fit mx-auto block px-12 py-2.5 mt-2 text-white font-bold rounded-lg shadow-sm" style={{ background: "#f97316" }}>
                       Đăng nhập
                     </button>
                   </div>
