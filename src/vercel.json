@@ -1,0 +1,4 @@
+Tại ô đặt tên file, bạn gõ chính xác:
+<pre><code>vercel.json</code></pre>
+Sau đó dán đoạn mã sau vào ô nội dung:
+<pre><code class="language-json">{
