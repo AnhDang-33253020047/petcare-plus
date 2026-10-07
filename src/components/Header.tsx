@@ -514,8 +514,11 @@ export default function Header() {
                         }}
                         className="w-full flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-emerald-500 hover:bg-emerald-50 transition-all text-left shadow-sm group"
                       >
-                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm overflow-hidden border border-gray-100">
-                           {renderPetIcon(pet.species)}
+                        {/* ĐÃ FIX ĐẦU CHÓ XANH Ở ĐÂY */}
+                        <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-gray-100">
+                          <div className="scale-75 transform mt-1">
+                            {renderPetIcon(pet.species)}
+                          </div>
                         </div>
                         <div className="flex-1">
                           <span className="text-sm font-bold text-gray-800 group-hover:text-emerald-700 block">
