@@ -118,6 +118,7 @@ export default function MuaBaoHiem() {
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [pendingAccountToSelectPet, setPendingAccountToSelectPet] = useState<any>(null)
+  const [showRegisterModal, setShowRegisterModal] = useState(false)
   
   const [paymentMethod, setPaymentMethod] = useState<"qr" | "card">("qr")
 
@@ -133,28 +134,32 @@ export default function MuaBaoHiem() {
   const isInsuranceActive = ["fubon", "phuhung", "opes"].includes(activeProvider)
   const isClinicActive = ["petcare", "tropicpet", "2vet"].includes(activeProvider)
 
-  // Khi bấm "Đăng ký khám duyệt hồ sơ"
+  // CHỈ kiểm tra currentUser, bắt buộc đăng nhập
   const handleRegisterClick = (plan: any) => {
     setSelectedPaymentPlan(plan)
-    if (!currentUser && !activePet) {
+    if (!currentUser) {
       setShowLoginModal(true)
     } else {
       setShowPaymentModal(true)
     }
   }
 
-  // Khi bấm "Thanh toán"
   const handleConfirmPayment = () => {
     setShowPaymentModal(false)
     setShowSuccessModal(true)
   }
 
-  // Xác định thú cưng đang hiển thị trong Popup Thanh toán
-  const currentPetDisplay = {
-    name: activePet?.name || currentUser?.pets[0]?.name || "Bí Đỏ",
-    speciesText: (activePet?.species || currentUser?.pets[0]?.species) === "cat" ? "Mèo" : "Chó",
-    owner: currentUser?.label || "Nam Nguyễn",
-    petId: activePet?.petId || currentUser?.pets[0]?.petId || "PET-NN-8921",
+  // Lấy dữ liệu 100% từ tài khoản đã đăng nhập, nếu chưa đăng nhập thì trả về "-"
+  const currentPetDisplay = currentUser ? {
+    name: activePet?.name || currentUser.pets[0].name,
+    speciesText: (activePet?.species || currentUser.pets[0].species) === "cat" ? "Mèo" : "Chó",
+    owner: currentUser.label,
+    petId: activePet?.petId || currentUser.pets[0].petId,
+  } : {
+    name: "-",
+    speciesText: "-",
+    owner: "-",
+    petId: "-"
   }
 
   const renderPricingCards = () => (
@@ -376,7 +381,7 @@ export default function MuaBaoHiem() {
                           if(setActivePet) setActivePet(pet)
                           setPendingAccountToSelectPet(null)
                           setShowLoginModal(false)
-                          setShowPaymentModal(true) // Chọn pet xong chuyển ngay sang thanh toán
+                          setShowPaymentModal(true)
                         }}
                         className="w-full flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-emerald-500 hover:bg-emerald-50 transition-all text-left shadow-sm group"
                       >
@@ -441,13 +446,11 @@ export default function MuaBaoHiem() {
                         key={acc.id}
                         onClick={() => {
                           if (acc.pets.length === 1) {
-                            // Tài khoản có 1 pet: Đăng nhập & sang luôn màn hình thanh toán
                             setCurrentUser(acc)
                             if(setActivePet) setActivePet(acc.pets[0])
                             setShowLoginModal(false)
                             setShowPaymentModal(true)
                           } else {
-                            // Tài khoản có > 1 pet: Chuyển sang màn chọn Pet
                             setPendingAccountToSelectPet(acc)
                           }
                         }}
@@ -466,10 +469,103 @@ export default function MuaBaoHiem() {
 
                 <div className="px-6 py-4 bg-white border-t border-gray-100 text-center text-[13px]">
                   <span className="text-gray-500">Bạn chưa có tài khoản? </span>
-                  <span className="text-emerald-600 font-bold cursor-pointer hover:text-emerald-700">Đăng ký ngay</span>
+                  <span 
+                    onClick={() => { setShowLoginModal(false); setShowRegisterModal(true); }}
+                    className="text-emerald-600 font-bold cursor-pointer hover:text-emerald-700"
+                  >Đăng ký ngay</span>
                 </div>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* POPUP ĐĂNG KÝ TÀI KHOẢN (TRUYỀN TỪ MÀN ĐĂNG NHẬP) */}
+      {showRegisterModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center px-4 backdrop-blur-sm animate-in fade-in duration-200"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden relative shadow-2xl">
+            <div className="px-6 py-5 flex items-center justify-between border-b border-gray-100 bg-gray-50">
+              <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+                Tạo tài khoản PetCare+
+              </h3>
+              <button onClick={() => setShowRegisterModal(false)} className="text-gray-400 hover:text-gray-700 p-1">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="px-6 py-5 max-h-[75vh] overflow-y-auto custom-scrollbar">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  setShowRegisterModal(false)
+                  alert("Tạo tài khoản thành công! Tính năng đang trong giai đoạn thử nghiệm. Vui lòng sử dụng tài khoản Demo để đăng nhập.")
+                }}
+              >
+                <div className="mb-7">
+                  <h4 className="text-xs font-bold text-orange-500 mb-3 uppercase tracking-wider flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-orange-100 flex items-center justify-center">1</span>
+                    Thông tin chủ nuôi
+                  </h4>
+                  <div className="space-y-3">
+                    <input type="email" placeholder="Email (dùng để đăng nhập)" required className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-orange-500 text-sm" />
+                    <input type="text" placeholder="Họ và tên" required className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-orange-500 text-sm" />
+                    <input type="tel" placeholder="Số điện thoại" required className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-orange-500 text-sm" />
+                    <input type="password" placeholder="Mật khẩu" required className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-orange-500 text-sm" />
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <h4 className="text-xs font-bold text-emerald-600 mb-3 uppercase tracking-wider flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center">2</span>
+                    Hồ sơ thú cưng
+                  </h4>
+                  <div className="space-y-3">
+                    <input type="text" placeholder="Tên thú cưng" required className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-emerald-500 text-sm" />
+                    <div className="flex gap-3">
+                      <select required className="w-1/2 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-white text-gray-500 text-sm" defaultValue="">
+                        <option value="" disabled>Chọn Loài</option>
+                        <option value="dog">Chó</option>
+                        <option value="cat">Mèo</option>
+                      </select>
+                      <input type="text" placeholder="Giống (vd: Poodle)" required className="w-1/2 px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-emerald-500 text-sm" />
+                    </div>
+
+                    <div className="pt-2">
+                      <div className="relative">
+                        <input type="text" placeholder="Mã định danh (Microchip / PetID) *" required className="w-full px-4 py-3 rounded-xl border-2 border-emerald-100 focus:ring-1 focus:ring-emerald-500 text-sm bg-emerald-50/30" />
+                        <svg className="w-5 h-5 text-emerald-500 absolute right-4 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <p className="text-[11px] text-gray-500 mt-1.5 ml-1 flex items-start gap-1">
+                        <span className="text-red-500">*</span> Trường dữ liệu bắt buộc để đồng bộ hồ sơ y tế phòng khám và xét duyệt bảo lãnh viện phí.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-gray-100 mt-6 flex justify-center">
+                  <button type="submit" className="w-fit mx-auto px-10 py-3.5 rounded-xl text-white font-bold text-base transition-transform active:scale-[0.98] shadow-md mt-4" style={{ background: "linear-gradient(135deg, #059669, #047857)" }}>
+                    Tạo tài khoản
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 text-center text-sm text-gray-600">
+              <span>Đã có tài khoản?&nbsp;</span>
+              <button onClick={() => { setShowRegisterModal(false); setShowLoginModal(true); }} className="font-bold text-emerald-600 hover:text-emerald-700">
+                Đăng nhập ngay
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -481,22 +577,12 @@ export default function MuaBaoHiem() {
             <div className="bg-emerald-50 px-6 py-5 border-b border-emerald-100 flex justify-between items-center">
               <div>
                 <h3 className="text-xl font-black text-gray-900">
-                  Gói{" "}
-                  <span className="text-orange-500">
-                    {selectedPlanDetails.name}
-                  </span>
+                  Gói <span className="text-orange-500">{selectedPlanDetails.name}</span>
                 </h3>
-                <p className="text-sm text-emerald-700 mt-1">
-                  {selectedPlanDetails.summary}
-                </p>
+                <p className="text-sm text-emerald-700 mt-1">{selectedPlanDetails.summary}</p>
               </div>
-              <button
-                onClick={() => setSelectedPlanDetails(null)}
-                className="w-8 h-8 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-500 transition-colors shadow-sm"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+              <button onClick={() => setSelectedPlanDetails(null)} className="w-8 h-8 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-500 transition-colors shadow-sm">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
 
@@ -523,14 +609,7 @@ export default function MuaBaoHiem() {
                   {selectedPlanDetails.details.coverage.map((item: string, idx: number) => (
                     <li key={idx} className="flex items-start gap-2 text-sm text-gray-600">
                       <span className="text-emerald-500 mt-0.5">•</span>
-                      <span
-                        dangerouslySetInnerHTML={{
-                          __html: item.replace(
-                            "TẶNG QUYỀN LỢI WELLNESS:",
-                            "<strong class='text-orange-600'>TẶNG QUYỀN LỢI WELLNESS:</strong>",
-                          ),
-                        }}
-                      />
+                      <span dangerouslySetInnerHTML={{__html: item.replace("TẶNG QUYỀN LỢI WELLNESS:", "<strong class='text-orange-600'>TẶNG QUYỀN LỢI WELLNESS:</strong>")}} />
                     </li>
                   ))}
                 </ul>
@@ -539,24 +618,12 @@ export default function MuaBaoHiem() {
               <div className="pt-5 border-t border-gray-100">
                 <div className="bg-orange-50 border border-orange-100 rounded-xl p-4">
                   <h4 className="font-bold text-orange-800 mb-3 flex items-center gap-2 text-sm">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
                     Quy trình kích hoạt & Bảo lãnh PetID
                   </h4>
                   <ul className="space-y-3 text-sm text-orange-900">
-                    <li className="flex items-start gap-2">
-                      <span className="mt-0.5 font-bold">•</span>
-                      <span>
-                        <strong>Khám sơ bộ miễn phí:</strong> Thú cưng cần hoàn tất khám tổng quát tại phòng khám đối tác để đảm bảo khỏe mạnh trước khi hệ thống duyệt cấp đơn.
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="mt-0.5 font-bold">•</span>
-                      <span>
-                        <strong>Bảo lãnh Cashless:</strong> Khi khám bệnh, chỉ cần xuất trình mã PetID hoặc quét Microchip. Nếu bệnh nằm trong danh mục, đối tác bảo hiểm sẽ thanh toán trực tiếp cho phòng khám, bạn không cần ứng trước chi phí.
-                      </span>
-                    </li>
+                    <li className="flex items-start gap-2"><span className="mt-0.5 font-bold">•</span><span><strong>Khám sơ bộ miễn phí:</strong> Thú cưng cần hoàn tất khám tổng quát tại phòng khám đối tác để đảm bảo khỏe mạnh trước khi hệ thống duyệt cấp đơn.</span></li>
+                    <li className="flex items-start gap-2"><span className="mt-0.5 font-bold">•</span><span><strong>Bảo lãnh Cashless:</strong> Khi khám bệnh, chỉ cần xuất trình mã PetID hoặc quét Microchip. Nếu bệnh nằm trong danh mục, đối tác bảo hiểm sẽ thanh toán trực tiếp cho phòng khám, bạn không cần ứng trước chi phí.</span></li>
                   </ul>
                 </div>
               </div>
@@ -565,9 +632,7 @@ export default function MuaBaoHiem() {
                 <h4 className="font-bold text-gray-900 mb-3 text-sm">Các điểm loại trừ chính:</h4>
                 <ul className="space-y-1.5 pb-2">
                   {selectedPlanDetails.details.exclusions.map((item: string, idx: number) => (
-                    <li key={idx} className="flex items-start gap-2 text-sm text-gray-500">
-                      <span className="text-gray-400 mt-0.5">-</span> {item}
-                    </li>
+                    <li key={idx} className="flex items-start gap-2 text-sm text-gray-500"><span className="text-gray-400 mt-0.5">-</span> {item}</li>
                   ))}
                 </ul>
               </div>
@@ -576,8 +641,8 @@ export default function MuaBaoHiem() {
         </div>
       )}
 
-      {/* 3. MODAL THANH TOÁN */}
-      {showPaymentModal && selectedPaymentPlan && (
+      {/* 3. MODAL THANH TOÁN (Chỉ mở khi có currentUser) */}
+      {showPaymentModal && selectedPaymentPlan && currentUser && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center px-4 backdrop-blur-sm animate-in fade-in duration-200"
           style={{ background: "rgba(0,0,0,0.5)" }}
@@ -683,8 +748,8 @@ export default function MuaBaoHiem() {
         </div>
       )}
 
-      {/* 4. MODAL THANH TOÁN THÀNH CÔNG ĐÃ ĐƯỢC TỐI ƯU NÚT BẤM */}
-      {showSuccessModal && selectedPaymentPlan && (
+      {/* 4. MODAL THANH TOÁN THÀNH CÔNG */}
+      {showSuccessModal && selectedPaymentPlan && currentUser && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative text-center p-6 sm:p-8 border border-gray-100">
             {/* Huy hiệu thành công */}
