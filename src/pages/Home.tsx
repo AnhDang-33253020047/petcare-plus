@@ -11,7 +11,7 @@ const REVIEWS = [
     id: 1,
     name: "Minh Anh",
     avatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80",
+      "https://petservicehcm.com/wp-content/uploads/2023/03/1-1-scaled.jpg?auto=format&fit=crop&w=100&q=80",
     stars: 5,
     text: "Từ ngày mua bảo hiểm với PetCare+, mình nhàn hẳn vụ viện phí. Chó Bông của mình bị viêm ruột khám ở Tropicpet, mở app lên quét mã là xong, không phải ứng trước một đồng nào. Rất ưng ý!",
   },
@@ -19,7 +19,7 @@ const REVIEWS = [
     id: 2,
     name: "Hoàng Nam",
     avatar:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=100&q=80",
+      "https://pethouse.com.vn/wp-content/uploads/2024/03/meo-bobb.webp?auto=format&fit=crop&w=100&q=80",
     stars: 5,
     text: "Gói bảo hiểm toàn diện chi trả cực kỳ tốt. Chức năng cá nhân hóa dinh dưỡng cũng giúp Cà Rốt nhà mình giảm cân thành công. Vote 5 sao cho đội ngũ hệ thống.",
   },
@@ -35,7 +35,7 @@ const REVIEWS = [
     id: 4,
     name: "Tuấn Kiệt",
     avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80",
+      "https://admin.vov.gov.vn/UploadFolder/KhoTin/Images/UploadFolder/VOVVN/Images/sites/default/files/styles/large/public/2024-01/mad-paws-21394322.jpg?auto=format&fit=crop&w=100&q=80",
     stars: 5,
     text: "Max nhà mình khá nghịch nên thỉnh thoảng hay trầy xước phải đi thú y. Mua gói tiêu chuẩn thấy quá hời so với chi phí khám chữa bệnh thực tế. Ứng dụng mượt, duyệt nhanh.",
   },
