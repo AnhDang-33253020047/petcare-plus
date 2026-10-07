@@ -13,7 +13,7 @@ const DEMO_ACCOUNTS = [
   {
     id: "user_1",
     ownerName: "Nam Nguyễn",
-    petName: "Leo",
+    petName: "Bí Đỏ",
     species: "cat",
     breed: "Mèo Anh lông ngắn",
     avatar: "N",
@@ -22,7 +22,7 @@ const DEMO_ACCOUNTS = [
   {
     id: "user_2",
     ownerName: "Ngọc Linh",
-    petName: "Milu",
+    petName: "Sam",
     species: "dog",
     breed: "Cún Corgi",
     avatar: "N",
@@ -31,9 +31,9 @@ const DEMO_ACCOUNTS = [
   {
     id: "user_3",
     ownerName: "Trần Bảo Ngọc",
-    petName: "Luna",
-    species: "cat",
-    breed: "Mèo Xiêm",
+    petName: "Bông",
+    species: "dog",
+    breed: "Chihuahua",
     avatar: "T",
     petId: "PET-BN-3302",
   },
