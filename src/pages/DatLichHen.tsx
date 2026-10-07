@@ -152,9 +152,6 @@ export default function DatLichHen() {
               
               {activePet ? (
                 <div className="flex items-center gap-4 p-4 rounded-xl border border-emerald-200 bg-emerald-50/50 shadow-sm transition-all">
-                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl shadow-sm border border-emerald-100 shrink-0">
-                    {activePet.species === "cat" ? "🐱" : "🐶"}
-                  </div>
                   <div>
                     <div className="font-bold text-gray-900">{activePet.name}</div>
                     <div className="text-sm text-emerald-700 font-medium mt-0.5">
