@@ -8,37 +8,34 @@ const HERO_IMAGES = [
   "https://catevolution.com.au/cdn/shop/articles/how_can_i_tell_if_my_cat_is_happy.png?v=1775649203",
 ]
 
-// Dữ liệu tài khoản Demo phục vụ thuyết trình / chấm điểm
+// Cập nhật Dữ liệu tài khoản Demo khớp với thiết kế Figma của bạn
 const DEMO_ACCOUNTS = [
   {
     id: "user_1",
-    ownerName: "Lan Anh",
-    petName: "Bí Đỏ",
+    ownerName: "Nam Nguyễn",
+    petName: "Leo",
     species: "cat",
-    breed: "Mèo Anh lông ngắn (British Shorthair)",
-    avatar: "🐱",
-    petId: "PET-BD-8921",
-    tagColor: "bg-emerald-100 text-emerald-800",
+    breed: "Mèo Anh lông ngắn",
+    avatar: "N",
+    petId: "PET-NN-8921",
   },
   {
     id: "user_2",
-    ownerName: "Minh Quân",
-    petName: "Bơ",
+    ownerName: "Ngọc Linh",
+    petName: "Milu",
     species: "dog",
-    breed: "Cún Golden Retriever",
-    avatar: "🐶",
-    petId: "PET-BO-4519",
-    tagColor: "bg-orange-100 text-orange-800",
+    breed: "Cún Corgi",
+    avatar: "N",
+    petId: "PET-NL-4519",
   },
   {
     id: "user_3",
-    ownerName: "Thu Trang",
-    petName: "Miu",
+    ownerName: "Trần Bảo Ngọc",
+    petName: "Luna",
     species: "cat",
-    breed: "Mèo Mướp Ta",
-    avatar: "🐾",
-    petId: "PET-MI-3302",
-    tagColor: "bg-blue-100 text-blue-800",
+    breed: "Mèo Xiêm",
+    avatar: "T",
+    petId: "PET-BN-3302",
   },
 ]
 
@@ -140,7 +137,6 @@ export default function MuaBaoHiem() {
   const isInsuranceActive = ["fubon", "phuhung", "opes"].includes(activeProvider)
   const isClinicActive = ["petcare", "tropicpet", "2vet"].includes(activeProvider)
 
-  // Bấm Đăng ký: Nếu chưa có tài khoản đăng nhập -> Bật Modal đăng nhập
   const handleRegisterClick = (plan: any) => {
     setSelectedPaymentPlan(plan)
     if (!currentUser) {
@@ -150,7 +146,6 @@ export default function MuaBaoHiem() {
     }
   }
 
-  // Chọn 1 tài khoản demo: Tự động đăng nhập và nhảy tiếp sang Modal thanh toán
   const handleSelectDemoAccount = (account: typeof DEMO_ACCOUNTS[0]) => {
     setCurrentUser(account)
     if (setActivePet) {
@@ -163,7 +158,6 @@ export default function MuaBaoHiem() {
     setShowPaymentModal(true)
   }
 
-  // Bấm Thanh toán -> Chuyển sang màn hình Thành công
   const handleConfirmPayment = () => {
     setShowPaymentModal(false)
     setShowSuccessModal(true)
@@ -379,64 +373,91 @@ export default function MuaBaoHiem() {
         {isClinicActive && renderPricingCards()}
       </div>
 
-      {/* 1. MODAL ĐĂNG NHẬP DEMO (1-CHẠM) */}
+      {/* 1. MODAL ĐĂNG NHẬP HỆ THỐNG CHUẨN THEO THIẾT KẾ MỚI */}
       {showLoginModal && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative border border-gray-100">
-            <div className="bg-emerald-50/80 px-6 py-5 border-b border-emerald-100 flex justify-between items-center">
-              <div>
-                <h3 className="text-xl font-black text-gray-900 flex items-center gap-2">
-                  <span>🔐</span> Đăng nhập tài khoản
-                </h3>
-                <p className="text-xs text-emerald-700 mt-1">
-                  Đăng nhập để liên kết hồ sơ thú cưng với bảo hiểm PetCare+
-                </p>
-              </div>
+          <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative border border-gray-100 flex flex-col">
+            {/* Header Form */}
+            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+              <h3 className="text-[17px] font-bold text-gray-900 flex items-center gap-2">
+                <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+                Đăng nhập hệ thống
+              </h3>
               <button
                 onClick={() => setShowLoginModal(false)}
-                className="w-8 h-8 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-500 transition-colors shadow-sm"
+                className="text-gray-400 hover:text-gray-600 transition-colors"
               >
-                ✕
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
 
+            {/* Body Form */}
             <div className="p-6">
-              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-                Chọn tài khoản demo để tiếp tục:
-              </p>
+              <div className="space-y-4 mb-6">
+                <input
+                  type="email"
+                  placeholder="Email đăng nhập"
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-sm text-gray-700"
+                />
+                <input
+                  type="password"
+                  placeholder="Mật khẩu"
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-sm text-gray-700"
+                />
+                <div className="flex items-center justify-between text-[13px] pt-1">
+                  <label className="flex items-center gap-2 text-gray-500 cursor-pointer">
+                    <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
+                    Lưu lại đăng nhập
+                  </label>
+                  <span className="text-emerald-600 font-semibold cursor-pointer hover:text-emerald-700">
+                    Quên mật khẩu?
+                  </span>
+                </div>
+                
+                <button 
+                  className="w-full py-2.5 mt-2 text-white font-bold rounded-lg transition-colors shadow-sm"
+                  style={{ background: "#f97316" }}
+                >
+                  Đăng nhập
+                </button>
+              </div>
 
+              {/* Vạch chia */}
+              <div className="flex items-center gap-3 mb-5">
+                <div className="flex-1 h-px bg-gray-100"></div>
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                  Hoặc trải nghiệm nhanh với
+                </span>
+                <div className="flex-1 h-px bg-gray-100"></div>
+              </div>
+
+              {/* Danh sách nút Demo 1-chạm */}
               <div className="space-y-3">
                 {DEMO_ACCOUNTS.map((acc) => (
-                  <div
+                  <button
                     key={acc.id}
                     onClick={() => handleSelectDemoAccount(acc)}
-                    className="p-4 rounded-2xl border-2 border-gray-100 hover:border-emerald-500 hover:bg-emerald-50/40 cursor-pointer transition-all flex items-center justify-between group shadow-sm hover:shadow"
+                    className="w-full flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-emerald-500 hover:bg-emerald-50 transition-all text-left group shadow-sm"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-2xl bg-gray-100 group-hover:bg-white flex items-center justify-center text-2xl shadow-inner transition-colors">
-                        {acc.avatar}
-                      </div>
-                      <div>
-                        <div className="font-bold text-gray-900 group-hover:text-emerald-700 text-sm">
-                          {acc.ownerName}
-                        </div>
-                        <div className="text-xs text-gray-500 mt-0.5">
-                          Thú cưng: <strong className="text-gray-800">{acc.petName}</strong> ({acc.breed})
-                        </div>
-                      </div>
+                    <div className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 font-bold text-xs bg-white shrink-0 group-hover:border-emerald-500 group-hover:text-emerald-600">
+                      {acc.avatar}
                     </div>
-                    <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-gray-100 text-gray-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                      Chọn →
+                    <span className="text-sm font-semibold text-gray-700 group-hover:text-emerald-700">
+                      Tài khoản Demo: {acc.ownerName}
                     </span>
-                  </div>
+                  </button>
                 ))}
               </div>
+            </div>
 
-              <div className="mt-5 pt-4 border-t border-gray-100 text-center">
-                <span className="text-xs text-gray-400">
-                  ⚡ Chế độ Demo: Đăng nhập 1-chạm không cần mật khẩu.
-                </span>
-              </div>
+            {/* Footer Form */}
+            <div className="px-6 py-4 bg-white border-t border-gray-100 text-center text-[13px]">
+              <span className="text-gray-500">Bạn chưa có tài khoản? </span>
+              <span className="text-emerald-600 font-bold cursor-pointer hover:text-emerald-700">Đăng ký ngay</span>
             </div>
           </div>
         </div>
@@ -562,7 +583,9 @@ export default function MuaBaoHiem() {
                 Thanh toán & Khám sơ bộ
               </h3>
               <button onClick={() => setShowPaymentModal(false)} className="text-gray-400 hover:text-gray-700 p-1">
-                ✕
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
 
