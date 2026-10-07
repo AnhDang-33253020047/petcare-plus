@@ -77,7 +77,7 @@ const EXTRA_PRODUCTS = [
       "Thiết kế đặc biệt với lượng calo thấp và L-Carnitine giúp chuyển hóa mỡ, ngăn ngừa béo phì và sỏi thận sau khi triệt sản.",
   },
   {
-    name: "Bánh thường làm sạch răng cho mèo 50g",
+    name: "Bánh thưởng làm sạch răng cho mèo 50g",
     brand: "Wellness CORE",
     image: "https://m.media-amazon.com/images/I/71ksAmONY6L.jpg",
     nutrition: [
