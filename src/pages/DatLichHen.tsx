@@ -700,7 +700,7 @@ export default function DatLichHen() {
                   setShowSuccessModal(false)
                   navigate('/')
                 }}
-                className="w-full py-3.5 rounded-xl text-white font-bold text-base transition-transform active:scale-[0.98] shadow-md"
+                className="w-fit mx-auto px-12 py-3.5 rounded-xl text-white font-bold text-base transition-transform active:scale-[0.98] shadow-md"
                 style={{
                   background: "linear-gradient(135deg, #059669, #047857)",
                 }}
