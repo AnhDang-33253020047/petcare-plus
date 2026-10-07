@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react"
+import { useNavigate } from "react-router" // Thêm thư viện để chuyển trang
 import { usePet } from "../context/PetContext"
 
 const CLINICS = [
@@ -36,7 +37,9 @@ const HOURS = Array.from({ length: 13 }, (_, i) =>
 const MINUTES = ["00", "30"]
 
 export default function DatLichHen() {
-  const { activePet } = usePet()
+  const navigate = useNavigate()
+  const { activePet } = (usePet() as any) || {}
+  
   const [selectedClinic, setSelectedClinic] = useState<string>("")
   const [selectedService, setSelectedService] = useState<string>("")
 
@@ -67,9 +70,19 @@ export default function DatLichHen() {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
+  // Nếu trong URL có query parameter pre-select dịch vụ nào đó (VD: từ màn hình Thanh toán thành công nhảy qua)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const service = urlParams.get('service');
+    if (service === 'kham-so-bo') {
+      setSelectedService('kham-so-bo');
+    }
+  }, []);
+
   const isEmergency = selectedService === "cap-cuu"
 
   const handleConfirm = () => {
+    // 1. Chặn ngay nếu chưa có thông tin Pet
     if (!activePet) {
       window.dispatchEvent(new Event("openLoginPopup"))
       return
@@ -124,6 +137,8 @@ export default function DatLichHen() {
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           <div className="flex-1 w-full bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
+            
+            {/* Bước 1: Hồ sơ thú cưng (MỚI) */}
             <div className="mb-8">
               <h3
                 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2"
@@ -131,6 +146,52 @@ export default function DatLichHen() {
               >
                 <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm">
                   1
+                </span>
+                Hồ sơ thú cưng
+              </h3>
+              
+              {activePet ? (
+                <div className="flex items-center gap-4 p-4 rounded-xl border border-emerald-200 bg-emerald-50/50 shadow-sm transition-all">
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl shadow-sm border border-emerald-100 shrink-0">
+                    {activePet.species === "cat" ? "🐱" : "🐶"}
+                  </div>
+                  <div>
+                    <div className="font-bold text-gray-900">{activePet.name}</div>
+                    <div className="text-sm text-emerald-700 font-medium mt-0.5">
+                      {activePet.species === "cat" ? "Mèo" : "Chó"}
+                      {activePet.gender ? ` • ${activePet.gender}` : ""}
+                      {activePet.desc ? ` • ${activePet.desc}` : ""}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => window.dispatchEvent(new Event("openLoginPopup"))}
+                    className="ml-auto text-sm font-bold text-emerald-600 hover:text-emerald-700 underline hidden sm:block"
+                  >
+                    Đổi hồ sơ
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50">
+                  <div className="text-sm text-gray-500 text-center sm:text-left">
+                    Bạn chưa chọn hồ sơ thú cưng nào để đặt lịch.
+                  </div>
+                  <button
+                    onClick={() => window.dispatchEvent(new Event("openLoginPopup"))}
+                    className="px-6 py-2.5 bg-gray-900 hover:bg-gray-800 text-white text-sm font-bold rounded-xl shadow-sm transition-colors whitespace-nowrap"
+                  >
+                    Đăng nhập / Chọn hồ sơ
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="mb-8">
+              <h3
+                className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm">
+                  2
                 </span>
                 Chọn cơ sở thú y
               </h3>
@@ -141,7 +202,7 @@ export default function DatLichHen() {
                     onClick={() => setSelectedClinic(clinic.id)}
                     className={`cursor-pointer rounded-xl p-4 border-2 transition-all flex flex-col items-center text-center gap-3 ${
                       selectedClinic === clinic.id
-                        ? "border-orange-500 bg-orange-50"
+                        ? "border-orange-500 bg-orange-50 shadow-sm"
                         : "border-gray-100 hover:border-orange-200"
                     }`}
                   >
@@ -172,7 +233,7 @@ export default function DatLichHen() {
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm">
-                    2
+                    3
                   </span>
                   Chọn dịch vụ
                 </h3>
@@ -195,7 +256,7 @@ export default function DatLichHen() {
                     }}
                     className={`cursor-pointer rounded-lg p-3 md:p-3.5 border-2 transition-all flex items-center justify-center gap-3 w-[calc(50%-0.5rem)] md:w-[calc(33.333%-1rem)] flex-grow-0 ${
                       selectedService === service.id
-                        ? "border-orange-500 bg-orange-50 text-orange-700"
+                        ? "border-orange-500 bg-orange-50 text-orange-700 shadow-sm"
                         : "border-gray-100 text-gray-600 hover:bg-gray-50"
                     }`}
                   >
@@ -214,7 +275,7 @@ export default function DatLichHen() {
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm">
-                  3
+                  4
                 </span>
                 Thời gian dự kiến
               </h3>
@@ -387,7 +448,7 @@ export default function DatLichHen() {
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm">
-                  4
+                  5
                 </span>
                 Ghi chú thêm (Tùy chọn)
               </h3>
@@ -506,7 +567,7 @@ export default function DatLichHen() {
                       Mở khóa đặc quyền Wellness
                     </h4>
                     <p className="text-sm text-gray-500 mt-1">
-                      Tiêm phòng hằng nằm, triệt sản... hoàn toàn miễn phí khi
+                      Tiêm phòng hằng năm, triệt sản... hoàn toàn miễn phí khi
                       mua thành công gói bảo hiểm.
                     </p>
                   </div>
@@ -571,7 +632,7 @@ export default function DatLichHen() {
         </div>
       </div>
 
-      {/* POPUP THÀNH CÔNG */}
+      {/* POPUP THÀNH CÔNG ĐÃ ĐƯỢC KẾT NỐI ACTIVEPET */}
       {showSuccessModal && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center px-4 backdrop-blur-sm"
@@ -640,8 +701,7 @@ export default function DatLichHen() {
               <button
                 onClick={() => {
                   setShowSuccessModal(false)
-                  // Có thể điều hướng về trang chủ hoặc hồ sơ
-                  // navigate('/');
+                  navigate('/')
                 }}
                 className="w-full py-3.5 rounded-xl text-white font-bold text-base transition-transform active:scale-[0.98] shadow-md"
                 style={{
