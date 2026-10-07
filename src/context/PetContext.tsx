@@ -14,7 +14,7 @@ const PetContext = createContext<PetContextValue>({
 })
 
 export function PetProvider({ children }: { children: React.ReactNode }) {
-  const [activePet, setActivePet] = useState<Pet>(PETS[0])
+  const [activePet, setActivePet] = useState(null)
   return (
     <PetContext.Provider value={{ activePet, setActivePet }}>
       {children}
