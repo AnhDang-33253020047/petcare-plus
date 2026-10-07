@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { label: "Cẩm nang chăm sóc", path: "/cam-nang-cham-soc" },
 ]
 
+// Đồng nhất Data với MuaBaoHiem.tsx
 const DEMO_ACCOUNTS = [
   {
     id: 1,
@@ -25,6 +26,7 @@ const DEMO_ACCOUNTS = [
         species: "cat",
         gender: "♂",
         desc: "5 tháng",
+        petId: "PET-NN-8921"
       },
     ],
   },
@@ -32,8 +34,8 @@ const DEMO_ACCOUNTS = [
     id: 2,
     label: "Ngọc Linh",
     pets: [
-      { id: "pet-2", name: "Sam", species: "dog", gender: "♂", desc: "3 tuổi" },
-      { id: "pet-3", name: "Sun", species: "cat", gender: "♀", desc: "2 tuổi" },
+      { id: "pet-2", name: "Sam", species: "dog", gender: "♂", desc: "3 tuổi", petId: "PET-NL-4519" },
+      { id: "pet-3", name: "Sun", species: "cat", gender: "♀", desc: "2 tuổi", petId: "PET-NL-4520" },
     ],
   },
   {
@@ -46,6 +48,7 @@ const DEMO_ACCOUNTS = [
         species: "dog",
         gender: "♂",
         desc: "5 tuổi",
+        petId: "PET-BN-3302"
       },
     ],
   },
@@ -54,7 +57,7 @@ const DEMO_ACCOUNTS = [
 export default function Header() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { activePet, setActivePet } = usePet()
+  const { activePet, setActivePet } = (usePet() as any) || {}
 
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [petDropdown, setPetDropdown] = useState(false)
@@ -64,7 +67,9 @@ export default function Header() {
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [showRegisterModal, setShowRegisterModal] = useState(false)
 
-  // Lắng nghe sự kiện yêu cầu mở Popup Đăng nhập từ các component khác
+  // State hỗ trợ luồng chọn thú cưng khi tài khoản có nhiều hơn 1 con
+  const [pendingAccountToSelectPet, setPendingAccountToSelectPet] = useState<any>(null)
+
   useEffect(() => {
     const handleOpenLogin = () => {
       setShowLoginModal(true)
@@ -189,7 +194,7 @@ export default function Header() {
                         <button
                           key={pet.id}
                           onClick={() => {
-                            setActivePet(pet)
+                            if(setActivePet) setActivePet(pet)
                             setPetDropdown(false)
                           }}
                           className="w-full flex items-center gap-4 px-5 py-3 text-left transition-colors"
@@ -475,148 +480,133 @@ export default function Header() {
         )}
       </header>
 
-      {/* POPUP ĐĂNG NHẬP */}
+      {/* POPUP ĐĂNG NHẬP HỆ THỐNG */}
       {showLoginModal && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center px-4 backdrop-blur-sm"
-          style={{ background: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="bg-white rounded-2xl w-full max-w-[400px] overflow-hidden relative shadow-2xl">
-            {/* Header Popup */}
-            <div className="px-6 py-5 flex items-center justify-between border-b border-gray-100 bg-gray-50">
-              <h3
-                className="text-lg font-bold text-gray-800 flex items-center gap-2"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                <svg
-                  className="w-5 h-5 text-emerald-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                  />
-                </svg>
-                Đăng nhập hệ thống
-              </h3>
-              <button
-                onClick={() => setShowLoginModal(false)}
-                className="text-gray-400 hover:text-gray-700 transition-colors p-1"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <div className="px-6 py-5">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  alert(
-                    "Sai email hoặc mật khẩu! Vui lòng thử lại hoặc dùng tài khoản Demo.",
-                  )
-                }}
-              >
-                <div className="space-y-4">
-                  <input
-                    type="email"
-                    placeholder="Email đăng nhập"
-                    required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-sm"
-                  />
-                  <input
-                    type="password"
-                    placeholder="Mật khẩu"
-                    required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-sm"
-                  />
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative border border-gray-100 flex flex-col">
+            
+            {pendingAccountToSelectPet ? (
+              /* Màn hình 2: Chọn thú cưng (dành cho tài khoản có nhiều hơn 1 pet) */
+              <>
+                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                  <button onClick={() => setPendingAccountToSelectPet(null)} className="text-gray-400 hover:text-emerald-600">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <h3 className="text-[16px] font-bold text-gray-900">Chọn thú cưng</h3>
+                  <div className="w-5"></div>
                 </div>
-
-                {/* Nút lưu đăng nhập & quên mật khẩu */}
-                <div className="flex items-center justify-between mt-4 mb-6">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500"
-                    />
-                    <span className="text-sm text-gray-600">
-                      Lưu lại đăng nhập
-                    </span>
-                  </label>
-                  <button
-                    type="button"
-                    className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
-                  >
-                    Quên mật khẩu?
+                <div className="p-6">
+                  <p className="text-sm text-gray-600 mb-4 text-center">
+                    Tài khoản <strong>{pendingAccountToSelectPet.label}</strong> đang quản lý nhiều hồ sơ. Vui lòng chọn thú cưng:
+                  </p>
+                  <div className="space-y-3">
+                    {pendingAccountToSelectPet.pets.map((pet: any) => (
+                      <button
+                        key={pet.id}
+                        onClick={() => {
+                          setCurrentUser(pendingAccountToSelectPet)
+                          if(setActivePet) setActivePet(pet)
+                          setPendingAccountToSelectPet(null)
+                          setShowLoginModal(false)
+                          window.dispatchEvent(new Event("loginSuccessContinueAction"))
+                        }}
+                        className="w-full flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-emerald-500 hover:bg-emerald-50 transition-all text-left shadow-sm group"
+                      >
+                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm overflow-hidden border border-gray-100">
+                           {renderPetIcon(pet.species)}
+                        </div>
+                        <div className="flex-1">
+                          <span className="text-sm font-bold text-gray-800 group-hover:text-emerald-700 block">
+                            {pet.name}
+                          </span>
+                          <span className="text-[12px] text-gray-500 block">
+                            {pet.species === 'cat' ? 'Mèo' : 'Chó'} • {pet.gender} • {pet.desc}
+                          </span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            ) : (
+              /* Màn hình 1: Form Đăng nhập & Chọn tài khoản Demo */
+              <>
+                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                  <h3 className="text-[17px] font-bold text-gray-900 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    </svg>
+                    Đăng nhập hệ thống
+                  </h3>
+                  <button onClick={() => setShowLoginModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                   </button>
                 </div>
 
-                <div className="flex justify-center">
-                  <button
-                    type="submit"
-                    className="w-fit mx-auto px-10 py-3.5 rounded-xl text-white font-bold text-base transition-transform active:scale-[0.98] shadow-md"
-                    style={{
-                      background: `linear-gradient(135deg, ${or}, ${orDark})`,
-                    }}
-                  >
-                    Đăng nhập
-                  </button>
-                </div>
-              </form>
-
-              {/* Khu vực Tài khoản Demo */}
-              <div className="mt-6 border-t border-gray-100 pt-5">
-                <p className="text-xs text-center text-gray-400 font-bold uppercase tracking-wider mb-4">
-                  Hoặc trải nghiệm nhanh với
-                </p>
-                <div className="flex flex-col gap-2.5">
-                  {DEMO_ACCOUNTS.map((acc) => (
-                    <button
-                      key={acc.id}
-                      onClick={() => {
-                        setCurrentUser(acc)
-                        setActivePet(acc.pets[0])
-                        setShowLoginModal(false)
-                      }}
-                      className="w-full text-left px-5 py-3 rounded-xl text-sm font-semibold text-gray-700 bg-gray-50 border border-gray-100 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-colors flex items-center gap-3"
-                    >
-                      <div className="w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-500 font-bold text-xs">
-                        {acc.label.charAt(0)}
-                      </div>
-                      Tài khoản Demo: {acc.label}
+                <div className="p-6">
+                  <div className="space-y-4 mb-6">
+                    <input type="email" placeholder="Email đăng nhập" className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-gray-700" />
+                    <input type="password" placeholder="Mật khẩu" className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-gray-700" />
+                    <div className="flex items-center justify-between text-[13px] pt-1">
+                      <label className="flex items-center gap-2 text-gray-500 cursor-pointer">
+                        <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
+                        Lưu lại đăng nhập
+                      </label>
+                      <span className="text-emerald-600 font-semibold cursor-pointer hover:text-emerald-700">Quên mật khẩu?</span>
+                    </div>
+                    <button className="w-full py-2.5 mt-2 text-white font-bold rounded-lg shadow-sm" style={{ background: "#f97316" }}>
+                      Đăng nhập
                     </button>
-                  ))}
-                </div>
-              </div>
-            </div>
+                  </div>
 
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 text-center text-sm text-gray-600">
-              <span>Bạn chưa có tài khoản?&nbsp;</span>
-              <button
-                onClick={() => {
-                  setShowLoginModal(false)
-                  setShowRegisterModal(true)
-                }}
-                className="font-bold text-emerald-600 hover:text-emerald-700 transition-colors"
-              >
-                Đăng ký ngay
-              </button>
-            </div>
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="flex-1 h-px bg-gray-100"></div>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Hoặc trải nghiệm nhanh với</span>
+                    <div className="flex-1 h-px bg-gray-100"></div>
+                  </div>
+
+                  <div className="space-y-3">
+                    {DEMO_ACCOUNTS.map((acc) => (
+                      <button
+                        key={acc.id}
+                        onClick={() => {
+                          if (acc.pets.length === 1) {
+                            setCurrentUser(acc)
+                            if(setActivePet) setActivePet(acc.pets[0])
+                            setShowLoginModal(false)
+                            // Bắn sự kiện để các trang khác (như MuaBaoHiem) biết đăng nhập thành công và đi tiếp luồng
+                            window.dispatchEvent(new Event("loginSuccessContinueAction"))
+                          } else {
+                            // Mở màn hình chọn Pet nếu có >= 2 con
+                            setPendingAccountToSelectPet(acc)
+                          }
+                        }}
+                        className="w-full flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-emerald-500 hover:bg-emerald-50 transition-all text-left group shadow-sm"
+                      >
+                        <div className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 font-bold text-xs bg-white shrink-0 group-hover:border-emerald-500 group-hover:text-emerald-600">
+                          {acc.label.charAt(0)}
+                        </div>
+                        <span className="text-sm font-semibold text-gray-700 group-hover:text-emerald-700">
+                          Tài khoản: {acc.label}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="px-6 py-4 bg-white border-t border-gray-100 text-center text-[13px]">
+                  <span className="text-gray-500">Bạn chưa có tài khoản? </span>
+                  <span 
+                    onClick={() => { setShowLoginModal(false); setShowRegisterModal(true); }}
+                    className="text-emerald-600 font-bold cursor-pointer hover:text-emerald-700"
+                  >Đăng ký ngay</span>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -735,8 +725,9 @@ export default function Header() {
                       <select
                         required
                         className="w-1/2 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-emerald-500 bg-white text-gray-500 text-sm transition-all"
+                        defaultValue=""
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           Chọn Loài
                         </option>
                         <option value="dog">Chó</option>
