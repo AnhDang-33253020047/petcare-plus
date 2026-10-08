@@ -151,7 +151,7 @@ export default function Home() {
               <div className="flex justify-center md:justify-start">
                 <a
                   href="/mua-bao-hiem"
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-xl text-white font-bold transition-transform hover:-translate-y-1 flex justify-center items-center text-lg"
+                  className="w-fit sm:w-auto px-8 py-3.5 rounded-xl text-white font-bold transition-transform hover:-translate-y-1 flex justify-center items-center text-lg"
                   style={{
                     background: `linear-gradient(135deg, ${em}, ${emDark})`,
                     boxShadow: "0 6px 20px rgba(5,150,105,0.25)",
