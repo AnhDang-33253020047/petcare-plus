@@ -734,7 +734,7 @@ export default function MuaBaoHiem() {
               <div className="mt-6 flex justify-center">
                 <button
                   onClick={handleConfirmPayment}
-                  className="w-full py-3.5 rounded-xl text-white font-bold text-base transition-transform active:scale-[0.98] shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                  className="w-fit px-10 rounded-xl text-white font-bold text-base transition-transform active:scale-[0.98] shadow-md hover:shadow-lg flex items-center justify-center gap-2"
                   style={{
                     background: `linear-gradient(135deg, ${or}, ${orDark})`,
                   }}
