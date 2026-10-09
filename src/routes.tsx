@@ -1,3 +1,4 @@
+import PetProfile from "./pages/PetProfile"
 import { createBrowserRouter } from "react-router"
 import Root from "./layouts/Root"
 import ShopLayout from "./layouts/ShopLayout"
