@@ -81,13 +81,13 @@ export default function Header() {
 
   const activePath = location.pathname
 
-  const renderPetIcon = (species: string) => {
+  const renderPetIcon = (species: string, customClass?: string) => {
     if (species === "cat") {
       return (
         <img
           src={catImg}
           alt="Cat"
-          className="w-auto h-[58px] object-contain drop-shadow-sm"
+          className={customClass || "w-auto h-[58px] object-contain drop-shadow-sm"}
         />
       )
     }
@@ -95,7 +95,7 @@ export default function Header() {
       <img
         src={dogImg}
         alt="Dog"
-        className="w-auto h-[46px] object-contain drop-shadow-sm"
+        className={customClass || "w-auto h-[46px] object-contain drop-shadow-sm"}
       />
     )
   }
@@ -236,13 +236,23 @@ export default function Header() {
                           </div>
                         </button>
                       ))}
+                      
+                      {/* Nút mở hồ sơ sức khỏe và thêm pet */}
                       <div
                         style={{ borderTop: "1px solid #f3f4f6" }}
-                        className="px-5 py-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+                        className="p-3 bg-gray-50 flex flex-col gap-2"
                       >
                         <button
-                          className="text-sm font-bold w-full text-left"
-                          style={{ color: em }}
+                          onClick={() => {
+                            setPetDropdown(false)
+                            navigate('/ho-so-thu-cung')
+                          }}
+                          className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors text-center shadow-sm"
+                        >
+                          Mở hồ sơ sức khỏe →
+                        </button>
+                        <button
+                          className="text-xs font-bold w-full text-left px-1 text-gray-500 hover:text-emerald-600"
                         >
                           + Thêm thú cưng mới
                         </button>
@@ -486,7 +496,7 @@ export default function Header() {
           <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative border border-gray-100 flex flex-col">
             
             {pendingAccountToSelectPet ? (
-              /* Màn hình 2: Chọn thú cưng (dành cho tài khoản có nhiều hơn 1 pet) */
+              /* Màn hình 2: Chọn thú cưng */
               <>
                 <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                   <button onClick={() => setPendingAccountToSelectPet(null)} className="text-gray-400 hover:text-emerald-600">
@@ -514,11 +524,9 @@ export default function Header() {
                         }}
                         className="w-full flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-emerald-500 hover:bg-emerald-50 transition-all text-left shadow-sm group"
                       >
-                        {/* ĐÃ FIX ĐẦU CHÓ XANH Ở ĐÂY */}
-                        <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-gray-100">
-                          <div className="scale-75 transform mt-1">
-                            {renderPetIcon(pet.species)}
-                          </div>
+                        {/* ĐÃ FIX TRIỆT ĐỂ: KHÔNG CẮT ĐẦU CHÓ XANH */}
+                        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-gray-100 p-1">
+                          {renderPetIcon(pet.species, "w-auto h-8 object-contain")}
                         </div>
                         <div className="flex-1">
                           <span className="text-sm font-bold text-gray-800 group-hover:text-emerald-700 block">
@@ -581,10 +589,8 @@ export default function Header() {
                             setCurrentUser(acc)
                             if(setActivePet) setActivePet(acc.pets[0])
                             setShowLoginModal(false)
-                            // Bắn sự kiện để các trang khác (như MuaBaoHiem) biết đăng nhập thành công và đi tiếp luồng
                             window.dispatchEvent(new Event("loginSuccessContinueAction"))
                           } else {
-                            // Mở màn hình chọn Pet nếu có >= 2 con
                             setPendingAccountToSelectPet(acc)
                           }
                         }}
@@ -594,7 +600,7 @@ export default function Header() {
                           {acc.label.charAt(0)}
                         </div>
                         <span className="text-sm font-semibold text-gray-700 group-hover:text-emerald-700">
-                          Tài khoản: {acc.label}
+                          Account demo: {acc.label}
                         </span>
                       </button>
                     ))}
@@ -621,7 +627,6 @@ export default function Header() {
           style={{ background: "rgba(0,0,0,0.5)" }}
         >
           <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden relative shadow-2xl">
-            {/* Header Popup */}
             <div className="px-6 py-5 flex items-center justify-between border-b border-gray-100 bg-gray-50">
               <h3
                 className="text-lg font-bold text-gray-800 flex items-center gap-2"
@@ -662,7 +667,6 @@ export default function Header() {
               </button>
             </div>
 
-            {/* Form Đăng ký */}
             <div className="px-6 py-5 max-h-[75vh] overflow-y-auto">
               <form
                 onSubmit={(e) => {
@@ -673,7 +677,6 @@ export default function Header() {
                   )
                 }}
               >
-                {/* 1. Thông tin chủ nuôi */}
                 <div className="mb-7">
                   <h4 className="text-xs font-bold text-orange-500 mb-3 uppercase tracking-wider flex items-center gap-2">
                     <span className="w-5 h-5 rounded-full bg-orange-100 flex items-center justify-center">
@@ -709,7 +712,6 @@ export default function Header() {
                   </div>
                 </div>
 
-                {/* 2. Thông tin thú cưng */}
                 <div className="mb-6">
                   <h4 className="text-xs font-bold text-emerald-600 mb-3 uppercase tracking-wider flex items-center gap-2">
                     <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center">
@@ -789,7 +791,6 @@ export default function Header() {
               </form>
             </div>
 
-            {/* Chuyển hướng ngược lại Đăng nhập */}
             <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 text-center text-sm text-gray-600">
               <span>Đã có tài khoản?&nbsp;</span>
               <button
