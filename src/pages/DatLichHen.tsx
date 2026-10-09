@@ -156,8 +156,8 @@ export default function DatLichHen() {
                     <div className="font-bold text-gray-900">{activePet.name}</div>
                     <div className="text-sm text-emerald-700 font-medium mt-0.5">
                       {activePet.species === "cat" ? "Mèo" : "Chó"}
-                      {activePet.gender ? ` • ${activePet.gender}` : ""}
-                      {activePet.desc ? ` • ${activePet.desc}` : ""}
+                      {activePet.genderFull || activePet.gender ? ` • ${activePet.genderFull || activePet.gender}` : ""}
+                      {activePet.age || activePet.desc ? ` • ${activePet.age || activePet.desc}` : ""}
                     </div>
                   </div>
                   <button

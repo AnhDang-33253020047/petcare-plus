@@ -8,31 +8,6 @@ const HERO_IMAGES = [
   "https://catevolution.com.au/cdn/shop/articles/how_can_i_tell_if_my_cat_is_happy.png?v=1775649203",
 ]
 
-// Đồng bộ chính xác với data từ Header.tsx
-const DEMO_ACCOUNTS = [
-  {
-    id: 1,
-    label: "Nam Nguyễn",
-    pets: [
-      { id: "pet-1", name: "Bí Đỏ", species: "cat", gender: "♂", desc: "5 tháng", petId: "PET-NN-8921" },
-    ],
-  },
-  {
-    id: 2,
-    label: "Ngọc Linh",
-    pets: [
-      { id: "pet-2", name: "Sam", species: "dog", gender: "♂", desc: "3 tuổi", petId: "PET-NL-4519" },
-      { id: "pet-3", name: "Sun", species: "cat", gender: "♀", desc: "2 tuổi", petId: "PET-NL-4520" },
-    ],
-  },
-  {
-    id: 3,
-    label: "Trần Bảo Ngọc",
-    pets: [
-      { id: "pet-4", name: "Bông", species: "dog", gender: "♂", desc: "5 tuổi", petId: "PET-BN-3302" },
-    ],
-  },
-]
 
 const INSURANCE_PLANS = [
   {
@@ -112,17 +87,12 @@ export default function MuaBaoHiem() {
   const [selectedPlanDetails, setSelectedPlanDetails] = useState<any>(null)
   const [selectedPaymentPlan, setSelectedPaymentPlan] = useState<any>(null)
   
-  // Trạng thái đăng nhập và tài khoản
-  const [currentUser, setCurrentUser] = useState<any>(null)
-  const [showLoginModal, setShowLoginModal] = useState(false)
+  // Trạng thái thanh toán và bảo hiểm
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
-  const [pendingAccountToSelectPet, setPendingAccountToSelectPet] = useState<any>(null)
-  const [showRegisterModal, setShowRegisterModal] = useState(false)
-  
   const [paymentMethod, setPaymentMethod] = useState<"qr" | "card">("qr")
 
-  const { activePet, setActivePet } = (usePet() as any) || {}
+  const { currentUser, activePet, openLoginModal } = usePet()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -131,14 +101,24 @@ export default function MuaBaoHiem() {
     return () => clearInterval(interval)
   }, [])
 
+  useEffect(() => {
+    const handleLoginContinue = () => {
+      if (selectedPaymentPlan) {
+        setShowPaymentModal(true)
+      }
+    }
+    window.addEventListener("loginSuccessContinueAction", handleLoginContinue)
+    return () => window.removeEventListener("loginSuccessContinueAction", handleLoginContinue)
+  }, [selectedPaymentPlan])
+
   const isInsuranceActive = ["fubon", "phuhung", "opes"].includes(activeProvider)
   const isClinicActive = ["petcare", "tropicpet", "2vet"].includes(activeProvider)
 
-  // CHỈ kiểm tra currentUser, bắt buộc đăng nhập
+  // Kiểm tra currentUser từ PetContext
   const handleRegisterClick = (plan: any) => {
     setSelectedPaymentPlan(plan)
     if (!currentUser) {
-      setShowLoginModal(true)
+      openLoginModal()
     } else {
       setShowPaymentModal(true)
     }
@@ -149,15 +129,19 @@ export default function MuaBaoHiem() {
     setShowSuccessModal(true)
   }
 
-  // Lấy dữ liệu 100% từ tài khoản đã đăng nhập, nếu chưa đăng nhập thì trả về "-"
-  const currentPetDisplay = currentUser ? {
-    name: activePet?.name || currentUser.pets[0].name,
-    speciesText: (activePet?.species || currentUser.pets[0].species) === "cat" ? "Mèo" : "Chó",
+  const currentPet = activePet || (currentUser?.pets && currentUser.pets.length > 0 ? currentUser.pets[0] : null)
+
+  // Lấy dữ liệu 100% từ tài khoản đã đăng nhập, bao gồm tuổi chính xác
+  const currentPetDisplay = currentUser && currentPet ? {
+    name: currentPet.name,
+    speciesText: currentPet.species === "cat" ? "Mèo" : "Chó",
+    age: currentPet.age || currentPet.desc || "",
     owner: currentUser.label,
-    petId: activePet?.petId || currentUser.pets[0].petId,
+    petId: currentPet.petId,
   } : {
     name: "-",
     speciesText: "-",
+    age: "-",
     owner: "-",
     petId: "-"
   }
@@ -351,224 +335,7 @@ export default function MuaBaoHiem() {
         {isClinicActive && renderPricingCards()}
       </div>
 
-      {/* 1. MODAL ĐĂNG NHẬP HỆ THỐNG */}
-      {showLoginModal && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative border border-gray-100 flex flex-col">
-            
-            {pendingAccountToSelectPet ? (
-              /* --- MÀN HÌNH CHỌN PET (Dành cho tài khoản Ngọc Linh) --- */
-              <>
-                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                  <button onClick={() => setPendingAccountToSelectPet(null)} className="text-gray-400 hover:text-emerald-600">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-                  <h3 className="text-[16px] font-bold text-gray-900">Chọn thú cưng</h3>
-                  <div className="w-5"></div>
-                </div>
-                <div className="p-6">
-                  <p className="text-sm text-gray-600 mb-4 text-center">
-                    Tài khoản <strong>{pendingAccountToSelectPet.label}</strong> đang quản lý nhiều hồ sơ. Bạn muốn mua bảo hiểm cho bé nào?
-                  </p>
-                  <div className="space-y-3">
-                    {pendingAccountToSelectPet.pets.map((pet: any) => (
-                      <button
-                        key={pet.id}
-                        onClick={() => {
-                          setCurrentUser(pendingAccountToSelectPet)
-                          if(setActivePet) setActivePet(pet)
-                          setPendingAccountToSelectPet(null)
-                          setShowLoginModal(false)
-                          setShowPaymentModal(true)
-                        }}
-                        className="w-full flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-emerald-500 hover:bg-emerald-50 transition-all text-left shadow-sm group"
-                      >
-                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm overflow-hidden border border-gray-100 text-lg">
-                           {pet.species === 'cat' ? '🐱' : '🐶'}
-                        </div>
-                        <div className="flex-1">
-                          <span className="text-sm font-bold text-gray-800 group-hover:text-emerald-700 block">
-                            {pet.name}
-                          </span>
-                          <span className="text-[12px] text-gray-500 block">
-                            {pet.species === 'cat' ? 'Mèo' : 'Chó'} • {pet.gender} • {pet.desc}
-                          </span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            ) : (
-              /* --- MÀN HÌNH ĐĂNG NHẬP CHÍNH --- */
-              <>
-                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-                  <h3 className="text-[17px] font-bold text-gray-900 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                    </svg>
-                    Đăng nhập hệ thống
-                  </h3>
-                  <button onClick={() => setShowLoginModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
 
-                <div className="p-6">
-                  <div className="space-y-4 mb-6">
-                    <input type="email" placeholder="Email đăng nhập" className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-gray-700" />
-                    <input type="password" placeholder="Mật khẩu" className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-gray-700" />
-                    <div className="flex items-center justify-between text-[13px] pt-1">
-                      <label className="flex items-center gap-2 text-gray-500 cursor-pointer">
-                        <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
-                        Lưu lại đăng nhập
-                      </label>
-                      <span className="text-emerald-600 font-semibold cursor-pointer hover:text-emerald-700">Quên mật khẩu?</span>
-                    </div>
-                    <button className="w-fit mx-auto block px-12 py-2.5 mt-2 text-white font-bold rounded-lg shadow-sm" style={{ background: "#f97316" }}>
-                      Đăng nhập
-                    </button>
-                  </div>
-
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="flex-1 h-px bg-gray-100"></div>
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Hoặc trải nghiệm nhanh với</span>
-                    <div className="flex-1 h-px bg-gray-100"></div>
-                  </div>
-
-                  <div className="space-y-3">
-                    {DEMO_ACCOUNTS.map((acc) => (
-                      <button
-                        key={acc.id}
-                        onClick={() => {
-                          if (acc.pets.length === 1) {
-                            setCurrentUser(acc)
-                            if(setActivePet) setActivePet(acc.pets[0])
-                            setShowLoginModal(false)
-                            setShowPaymentModal(true)
-                          } else {
-                            setPendingAccountToSelectPet(acc)
-                          }
-                        }}
-                        className="w-full flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-emerald-500 hover:bg-emerald-50 transition-all text-left group shadow-sm"
-                      >
-                        <div className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 font-bold text-xs bg-white shrink-0 group-hover:border-emerald-500 group-hover:text-emerald-600">
-                          {acc.label.charAt(0)}
-                        </div>
-                        <span className="text-sm font-semibold text-gray-700 group-hover:text-emerald-700">
-                          Account demo: {acc.label}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="px-6 py-4 bg-white border-t border-gray-100 text-center text-[13px]">
-                  <span className="text-gray-500">Bạn chưa có tài khoản? </span>
-                  <span 
-                    onClick={() => { setShowLoginModal(false); setShowRegisterModal(true); }}
-                    className="text-emerald-600 font-bold cursor-pointer hover:text-emerald-700"
-                  >Đăng ký ngay</span>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* POPUP ĐĂNG KÝ TÀI KHOẢN (TRUYỀN TỪ MÀN ĐĂNG NHẬP) */}
-      {showRegisterModal && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center px-4 backdrop-blur-sm animate-in fade-in duration-200"
-          style={{ background: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden relative shadow-2xl">
-            <div className="px-6 py-5 flex items-center justify-between border-b border-gray-100 bg-gray-50">
-              <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                </svg>
-                Tạo tài khoản PetCare+
-              </h3>
-              <button onClick={() => setShowRegisterModal(false)} className="text-gray-400 hover:text-gray-700 p-1">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            <div className="px-6 py-5 max-h-[75vh] overflow-y-auto custom-scrollbar">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  setShowRegisterModal(false)
-                  alert("Tạo tài khoản thành công! Tính năng đang trong giai đoạn thử nghiệm. Vui lòng sử dụng tài khoản Demo để đăng nhập.")
-                }}
-              >
-                <div className="mb-7">
-                  <h4 className="text-xs font-bold text-orange-500 mb-3 uppercase tracking-wider flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-orange-100 flex items-center justify-center">1</span>
-                    Thông tin chủ nuôi
-                  </h4>
-                  <div className="space-y-3">
-                    <input type="email" placeholder="Email (dùng để đăng nhập)" required className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-orange-500 text-sm" />
-                    <input type="text" placeholder="Họ và tên" required className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-orange-500 text-sm" />
-                    <input type="tel" placeholder="Số điện thoại" required className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-orange-500 text-sm" />
-                    <input type="password" placeholder="Mật khẩu" required className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-orange-500 text-sm" />
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <h4 className="text-xs font-bold text-emerald-600 mb-3 uppercase tracking-wider flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center">2</span>
-                    Hồ sơ thú cưng
-                  </h4>
-                  <div className="space-y-3">
-                    <input type="text" placeholder="Tên thú cưng" required className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-emerald-500 text-sm" />
-                    <div className="flex gap-3">
-                      <select required className="w-1/2 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-white text-gray-500 text-sm" defaultValue="">
-                        <option value="" disabled>Chọn Loài</option>
-                        <option value="dog">Chó</option>
-                        <option value="cat">Mèo</option>
-                      </select>
-                      <input type="text" placeholder="Giống (vd: Poodle)" required className="w-1/2 px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-emerald-500 text-sm" />
-                    </div>
-
-                    <div className="pt-2">
-                      <div className="relative">
-                        <input type="text" placeholder="Mã định danh (Microchip / PetID) *" required className="w-full px-4 py-3 rounded-xl border-2 border-emerald-100 focus:ring-1 focus:ring-emerald-500 text-sm bg-emerald-50/30" />
-                        <svg className="w-5 h-5 text-emerald-500 absolute right-4 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                      <p className="text-[11px] text-gray-500 mt-1.5 ml-1 flex items-start gap-1">
-                        <span className="text-red-500">*</span> Trường dữ liệu bắt buộc để đồng bộ hồ sơ y tế phòng khám và xét duyệt bảo lãnh viện phí.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-gray-100 mt-6 flex justify-center">
-                  <button type="submit" className="w-fit mx-auto px-10 py-3.5 rounded-xl text-white font-bold text-base transition-transform active:scale-[0.98] shadow-md mt-4" style={{ background: "linear-gradient(135deg, #059669, #047857)" }}>
-                    Tạo tài khoản
-                  </button>
-                </div>
-              </form>
-            </div>
-
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 text-center text-sm text-gray-600">
-              <span>Đã có tài khoản?&nbsp;</span>
-              <button onClick={() => { setShowRegisterModal(false); setShowLoginModal(true); }} className="font-bold text-emerald-600 hover:text-emerald-700">
-                Đăng nhập ngay
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* 2. MODAL CHI TIẾT QUYỀN LỢI */}
       {selectedPlanDetails && (
@@ -674,7 +441,7 @@ export default function MuaBaoHiem() {
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-600 text-sm font-medium">Hồ sơ thú cưng:</span>
                   <span className="font-bold text-gray-800">
-                    {currentPetDisplay.name} ({currentPetDisplay.speciesText})
+                    {currentPetDisplay.name} ({currentPetDisplay.speciesText}{currentPetDisplay.age && currentPetDisplay.age !== "-" ? ` • ${currentPetDisplay.age}` : ""})
                   </span>
                 </div>
                 <div className="flex justify-between mb-2">

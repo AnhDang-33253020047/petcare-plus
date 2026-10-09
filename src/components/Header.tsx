@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useNavigate, useLocation, Link } from "react-router"
 import logoImg from "../assets/logo.png"
 import catImg from "../assets/PetCare_cat_orange_solid_curved_tail_237x415.png"
 import dogImg from "../assets/PetCare_dog_green_right.png"
-import { em, emDark, or, orDark } from "../data"
+import { em, DEMO_ACCOUNTS, DemoAccount, PetItem, or, orDark } from "../data"
 import { usePet } from "../context/PetContext"
 
 // Cấu hình Menu
@@ -14,70 +14,37 @@ const NAV_ITEMS = [
   { label: "Cẩm nang chăm sóc", path: "/cam-nang-cham-soc" },
 ]
 
-// Đồng nhất Data với MuaBaoHiem.tsx
-const DEMO_ACCOUNTS = [
-  {
-    id: 1,
-    label: "Nam Nguyễn",
-    pets: [
-      {
-        id: "pet-1",
-        name: "Bí Đỏ",
-        species: "cat",
-        gender: "♂",
-        desc: "5 tháng",
-        petId: "PET-NN-8921"
-      },
-    ],
-  },
-  {
-    id: 2,
-    label: "Ngọc Linh",
-    pets: [
-      { id: "pet-2", name: "Sam", species: "dog", gender: "♂", desc: "3 tuổi", petId: "PET-NL-4519" },
-      { id: "pet-3", name: "Sun", species: "cat", gender: "♀", desc: "2 tuổi", petId: "PET-NL-4520" },
-    ],
-  },
-  {
-    id: 3,
-    label: "Trần Bảo Ngọc",
-    pets: [
-      {
-        id: "pet-4",
-        name: "Bông",
-        species: "dog",
-        gender: "♂",
-        desc: "5 tuổi",
-        petId: "PET-BN-3302"
-      },
-    ],
-  },
-]
-
 export default function Header() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { activePet, setActivePet } = (usePet() as any) || {}
+  const {
+    currentUser,
+    activePet,
+    setActivePet,
+    login,
+    logout,
+    isLoginModalOpen,
+    setIsLoginModalOpen,
+    openLoginModal,
+  } = usePet()
 
-  const [currentUser, setCurrentUser] = useState<any>(null)
   const [petDropdown, setPetDropdown] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // State quản lý Modals
-  const [showLoginModal, setShowLoginModal] = useState(false)
   const [showRegisterModal, setShowRegisterModal] = useState(false)
 
   // State hỗ trợ luồng chọn thú cưng khi tài khoản có nhiều hơn 1 con
-  const [pendingAccountToSelectPet, setPendingAccountToSelectPet] = useState<any>(null)
+  const [pendingAccountToSelectPet, setPendingAccountToSelectPet] = useState<DemoAccount | null>(null)
 
-  useEffect(() => {
-    const handleOpenLogin = () => {
-      setShowLoginModal(true)
+  const handleLogout = () => {
+    logout()
+    setPetDropdown(false)
+    setMobileMenuOpen(false)
+    if (location.pathname === "/ho-so-thu-cung") {
+      navigate("/")
     }
-    window.addEventListener("openLoginPopup", handleOpenLogin)
-
-    return () => window.removeEventListener("openLoginPopup", handleOpenLogin)
-  }, [])
+  }
 
   const activePath = location.pathname
 
@@ -174,11 +141,16 @@ export default function Header() {
                     </div>
                     <div className="text-left pr-2">
                       <div
-                        className="text-[15px] font-bold text-gray-800 leading-none"
+                        className="text-[15px] font-bold text-gray-800 leading-none mb-1"
                         style={{ fontFamily: "var(--font-display)" }}
                       >
-                        Thú cưng đang chọn
+                        {activePet ? activePet.name : "Thú cưng đang chọn"}
                       </div>
+                      {activePet && (
+                        <div className="text-[12px] text-gray-500 font-medium leading-none">
+                          {activePet.gender} • {activePet.age || activePet.desc}
+                        </div>
+                      )}
                     </div>
                   </button>
 
@@ -231,7 +203,7 @@ export default function Header() {
                                 {pet.gender}
                               </span>
                               <span className="text-gray-300">•</span>
-                              <span>{pet.desc}</span>
+                              <span>{pet.age || pet.desc}</span>
                             </div>
                           </div>
                         </button>
@@ -298,7 +270,7 @@ export default function Header() {
 
             {currentUser ? (
               <button
-                onClick={() => setCurrentUser(null)}
+                onClick={handleLogout}
                 className="w-11 h-11 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors"
                 title="Đăng xuất"
               >
@@ -318,7 +290,7 @@ export default function Header() {
               </button>
             ) : (
               <button
-                onClick={() => setShowLoginModal(true)}
+                onClick={openLoginModal}
                 className="w-11 h-11 rounded-xl flex items-center justify-center transition-opacity hover:opacity-90 shadow-sm"
                 style={{
                   background: `linear-gradient(135deg, ${or}, ${orDark})`,
@@ -346,11 +318,12 @@ export default function Header() {
           <div className="flex md:hidden items-center gap-2 ml-auto">
             {currentUser ? (
               <button
-                className="relative w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ border: "1.5px solid #e5e7eb" }}
+                onClick={handleLogout}
+                className="relative w-10 h-10 rounded-xl flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors"
+                title="Đăng xuất"
               >
                 <svg
-                  className="w-5 h-5 text-gray-600"
+                  className="w-5 h-5 text-gray-700"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -359,21 +332,15 @@ export default function Header() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                    d="M17 16l4-4m0 0l4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                   />
                 </svg>
-                <span
-                  className="absolute top-1.5 right-1.5 w-3 h-3 rounded-full text-white flex items-center justify-center"
-                  style={{ fontSize: 7, fontWeight: 800, background: or }}
-                >
-                  2
-                </span>
               </button>
             ) : (
               <button
                 onClick={() => {
                   setMobileMenuOpen(false)
-                  setShowLoginModal(true)
+                  openLoginModal()
                 }}
                 className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm"
                 style={{
@@ -474,10 +441,7 @@ export default function Header() {
                     </div>
                   </div>
                   <button
-                    onClick={() => {
-                      setCurrentUser(null)
-                      setMobileMenuOpen(false)
-                    }}
+                    onClick={handleLogout}
                     className="w-full py-3.5 rounded-xl text-base font-bold text-gray-700 bg-gray-100 flex items-center justify-center gap-2"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
@@ -491,7 +455,7 @@ export default function Header() {
       </header>
 
       {/* POPUP ĐĂNG NHẬP HỆ THỐNG */}
-      {showLoginModal && (
+      {isLoginModalOpen && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative border border-gray-100 flex flex-col">
             
@@ -516,11 +480,8 @@ export default function Header() {
                       <button
                         key={pet.id}
                         onClick={() => {
-                          setCurrentUser(pendingAccountToSelectPet)
-                          if(setActivePet) setActivePet(pet)
+                          login(pendingAccountToSelectPet, pet)
                           setPendingAccountToSelectPet(null)
-                          setShowLoginModal(false)
-                          window.dispatchEvent(new Event("loginSuccessContinueAction"))
                         }}
                         className="w-full flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-emerald-500 hover:bg-emerald-50 transition-all text-left shadow-sm group"
                       >
@@ -533,7 +494,7 @@ export default function Header() {
                             {pet.name}
                           </span>
                           <span className="text-[12px] text-gray-500 block">
-                            {pet.species === 'cat' ? 'Mèo' : 'Chó'} • {pet.gender} • {pet.desc}
+                            {pet.species === 'cat' ? 'Mèo' : 'Chó'} • {pet.genderFull || pet.gender} • {pet.age || pet.desc}
                           </span>
                         </div>
                       </button>
@@ -551,7 +512,7 @@ export default function Header() {
                     </svg>
                     Đăng nhập hệ thống
                   </h3>
-                  <button onClick={() => setShowLoginModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                  <button onClick={() => setIsLoginModalOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -586,10 +547,7 @@ export default function Header() {
                         key={acc.id}
                         onClick={() => {
                           if (acc.pets.length === 1) {
-                            setCurrentUser(acc)
-                            if(setActivePet) setActivePet(acc.pets[0])
-                            setShowLoginModal(false)
-                            window.dispatchEvent(new Event("loginSuccessContinueAction"))
+                            login(acc, acc.pets[0])
                           } else {
                             setPendingAccountToSelectPet(acc)
                           }
@@ -610,7 +568,7 @@ export default function Header() {
                 <div className="px-6 py-4 bg-white border-t border-gray-100 text-center text-[13px]">
                   <span className="text-gray-500">Bạn chưa có tài khoản? </span>
                   <span 
-                    onClick={() => { setShowLoginModal(false); setShowRegisterModal(true); }}
+                    onClick={() => { setIsLoginModalOpen(false); setShowRegisterModal(true); }}
                     className="text-emerald-600 font-bold cursor-pointer hover:text-emerald-700"
                   >Đăng ký ngay</span>
                 </div>
@@ -746,6 +704,15 @@ export default function Header() {
                       />
                     </div>
 
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Tuổi / Tháng tuổi (vd: 2 tuổi hoặc 5 tháng)"
+                        required
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-emerald-500 transition-all text-sm"
+                      />
+                    </div>
+
                     <div className="pt-2">
                       <div className="relative">
                         <input
@@ -796,7 +763,7 @@ export default function Header() {
               <button
                 onClick={() => {
                   setShowRegisterModal(false)
-                  setShowLoginModal(true)
+                  openLoginModal()
                 }}
                 className="font-bold text-emerald-600 hover:text-emerald-700 transition-colors"
               >

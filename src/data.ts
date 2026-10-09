@@ -3,15 +3,224 @@ export const emDark = "#047857"
 export const or = "#f97316"
 export const orDark = "#ea580c"
 
+export interface PetItem {
+  id: string
+  name: string
+  species: "cat" | "dog"
+  gender: string
+  genderFull?: string
+  desc: string
+  age?: string
+  breed?: string
+  birthday?: string
+  weight?: string
+  neutered?: string
+  petId: string
+  microchip?: string
+  bcs?: string
+  mer?: string
+  k?: string
+  note?: string
+  vaccines?: {
+    title: string
+    status: string
+    date: string
+    clinic: string
+  }[]
+}
+
+export interface DemoAccount {
+  id: number
+  label: string
+  pets: PetItem[]
+}
+
+export const DEMO_ACCOUNTS: DemoAccount[] = [
+  {
+    id: 1,
+    label: "Nam Nguyễn",
+    pets: [
+      {
+        id: "pet-1",
+        name: "Bí Đỏ",
+        species: "cat",
+        gender: "♂",
+        genderFull: "♂ Đực",
+        desc: "2 tuổi",
+        age: "2 tuổi",
+        breed: "Mèo Anh lông ngắn",
+        birthday: "15/04/2024",
+        weight: "4.2 kg",
+        neutered: "Đã triệt sản",
+        petId: "PET-NN-8921",
+        microchip: "981098104829104",
+        bcs: "5 / 9",
+        mer: "218 kcal",
+        k: "1.2",
+        note: "Cân nặng ổn định ở mức 4.2 kg. Khuyến nghị duy trì khẩu phần kết hợp thức ăn ướt (pate) để bổ sung lượng nước tự nhiên, phòng ngừa sỏi tiết niệu và kiểm soát khoáng chất thận.",
+        vaccines: [
+          {
+            title: "Vaccine 4 bệnh cho mèo (Mũi 3)",
+            status: "Đã tiêm",
+            date: "10/01/2026",
+            clinic: "BV Thú y PetCare Q.2",
+          },
+          {
+            title: "Vaccine dại (Rabies)",
+            status: "Đã tiêm",
+            date: "25/02/2026",
+            clinic: "BV Thú y PetCare Q.2",
+          },
+          {
+            title: "Tẩy giun & Nhỏ gáy phòng ve rận định kỳ",
+            status: "Sắp đến hạn",
+            date: "Khuyến nghị: Tháng 11/2026",
+            clinic: "Mạng lưới đối tác PetCare+",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 2,
+    label: "Ngọc Linh",
+    pets: [
+      {
+        id: "pet-2",
+        name: "Sam",
+        species: "dog",
+        gender: "♂",
+        genderFull: "♂ Đực",
+        desc: "3 tuổi",
+        age: "3 tuổi",
+        breed: "Poodle",
+        birthday: "15/03/2023",
+        weight: "5.5 kg",
+        neutered: "Đã triệt sản",
+        petId: "PET-NL-4519",
+        microchip: "981098104519001",
+        bcs: "5 / 9",
+        mer: "350 kcal",
+        k: "1.6",
+        note: "Chó Poodle 3 tuổi thể trạng lý tưởng, răng sạch ít vôi. Khuyến nghị duy trì vận động thể chất hàng ngày và tẩy giun định kỳ.",
+        vaccines: [
+          {
+            title: "Vaccine 7 bệnh cho chó (Nhắc lại hàng năm)",
+            status: "Đã tiêm",
+            date: "10/03/2026",
+            clinic: "BV Thú y PetCare Q.2",
+          },
+          {
+            title: "Vaccine dại (Rabies định kỳ)",
+            status: "Đã tiêm",
+            date: "15/03/2026",
+            clinic: "BV Thú y PetCare Q.2",
+          },
+          {
+            title: "Tẩy giun & Nhỏ gáy phòng ve rận định kỳ",
+            status: "Sắp đến hạn",
+            date: "Khuyến nghị: Tháng 11/2026",
+            clinic: "Mạng lưới đối tác PetCare+",
+          },
+        ],
+      },
+      {
+        id: "pet-3",
+        name: "Sun",
+        species: "cat",
+        gender: "♀",
+        genderFull: "♀ Cái",
+        desc: "2 tuổi",
+        age: "2 tuổi",
+        breed: "Mèo Ba Tư",
+        birthday: "20/07/2024",
+        weight: "3.8 kg",
+        neutered: "Đã triệt sản",
+        petId: "PET-NL-4520",
+        microchip: "981098104520002",
+        bcs: "5 / 9",
+        mer: "210 kcal",
+        k: "1.2",
+        note: "Mèo Ba Tư 2 tuổi cân nặng ổn định ở mức 3.8 kg. Khuyến nghị duy trì khẩu phần pate ướt kết hợp hạt ngừa sỏi tiết niệu và chải lông định kỳ.",
+        vaccines: [
+          {
+            title: "Vaccine 4 bệnh cho mèo (Nhắc lại hàng năm)",
+            status: "Đã tiêm",
+            date: "20/07/2026",
+            clinic: "BV Thú y PetCare Q.2",
+          },
+          {
+            title: "Vaccine dại (Rabies định kỳ)",
+            status: "Đã tiêm",
+            date: "20/07/2026",
+            clinic: "BV Thú y PetCare Q.2",
+          },
+          {
+            title: "Tẩy giun định kỳ",
+            status: "Sắp đến hạn",
+            date: "Khuyến nghị: Tháng 11/2026",
+            clinic: "Mạng lưới đối tác PetCare+",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 3,
+    label: "Trần Bảo Ngọc",
+    pets: [
+      {
+        id: "pet-4",
+        name: "Bông",
+        species: "dog",
+        gender: "♂",
+        genderFull: "♂ Đực",
+        desc: "5 tuổi",
+        age: "5 tuổi",
+        breed: "Corgi",
+        birthday: "12/04/2021",
+        weight: "12.0 kg",
+        neutered: "Đã triệt sản",
+        petId: "PET-BN-3302",
+        microchip: "981098103302003",
+        bcs: "6 / 9",
+        mer: "620 kcal",
+        k: "1.3",
+        note: "Chó Corgi 5 tuổi thể trạng hơi tròn trịa. Cần kiểm soát cân nặng để hạn chế áp lực lên khớp và cột sống lưng. Đi dạo nhẹ 30 phút mỗi ngày.",
+        vaccines: [
+          {
+            title: "Vaccine 7 bệnh cho chó (Nhắc lại hàng năm)",
+            status: "Đã tiêm",
+            date: "12/04/2026",
+            clinic: "Phòng khám 2Vet",
+          },
+          {
+            title: "Vaccine dại (Rabies)",
+            status: "Đã tiêm",
+            date: "12/04/2026",
+            clinic: "Phòng khám 2Vet",
+          },
+          {
+            title: "Khám khớp & Tẩy giun định kỳ",
+            status: "Sắp đến hạn",
+            date: "Khuyến nghị: Tháng 11/2026",
+            clinic: "Mạng lưới đối tác PetCare+",
+          },
+        ],
+      },
+    ],
+  },
+]
+
 export const PETS = [
   { id: 1, name: "Mochi", type: "Mèo cái • 3 tuổi 2 tháng" },
   { id: 2, name: "Bông", type: "Chó đực • 5 tuổi 1 tháng" },
 ]
 
-export const NAV_ITEMS: { label: string path: string }[] = [
+export const NAV_ITEMS: { label: string; path: string }[] = [
   { label: "Mua bảo hiểm", path: "/mua-bao-hiem" },
   { label: "Đặt lịch hẹn", path: "/dat-lich-hen" },
-  { label: "Cửa hàng dinh dưỡng", path: "/cua-hang-dinh-duong" },
+  { label: "Cẩm nang dinh dưỡng", path: "/cam-nang-dinh-duong" },
   { label: "Cẩm nang chăm sóc", path: "/cam-nang-cham-soc" },
 ]
 
