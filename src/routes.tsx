@@ -3,7 +3,6 @@ import { createBrowserRouter } from "react-router"
 import Root from "./layouts/Root"
 import ShopLayout from "./layouts/ShopLayout"
 import Home from "./pages/Home"
-// Đã sửa lại đường dẫn import theo đúng tên file mới của bạn
 import CamNangDinhDuong from "./pages/CamNangDinhDuong"
 import MuaBaoHiem from "./pages/MuaBaoHiem"
 import CamNangChamSoc from "./pages/CamNangChamSoc"
@@ -18,7 +17,7 @@ export const router = createBrowserRouter([
   {
     path: "/cam-nang-dinh-duong",
     Component: ShopLayout,
-    children: [{ index: true, Component: CamNangDinhDuong }], // Cập nhật tên Component
+    children: [{ index: true, Component: CamNangDinhDuong }],
   },
   {
     path: "/mua-bao-hiem",
@@ -34,5 +33,10 @@ export const router = createBrowserRouter([
     path: "/dat-lich-hen",
     Component: ShopLayout,
     children: [{ index: true, Component: DatLichHen }],
+  },
+  {
+    path: "/ho-so-thu-cung",
+    Component: ShopLayout,
+    children: [{ index: true, Component: PetProfile }],
   },
 ])
