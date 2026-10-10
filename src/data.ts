@@ -212,6 +212,125 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
   },
 ]
 
+export interface ClinicItem {
+  id: string
+  name: string
+  address: string
+  district?: string
+  city?: string
+  logo: string
+  isInsurance: boolean
+  badgeText: string
+  slotPrice?: string
+  specialty?: string
+  phone?: string
+  note?: string
+}
+
+export const CLINICS: ClinicItem[] = [
+  // Mạng lưới đối tác bảo hiểm PetCare+
+  {
+    id: "petcare",
+    name: "Bệnh viện Thú y PetCare",
+    address: "124A Xuân Thủy, Phường An Khánh, TP. Thủ Đức, TP.HCM",
+    district: "TP. Thủ Đức",
+    city: "TP.HCM",
+    logo: "https://petcare.vn/wp-content/themes/Petcare/banners/petcarevn_logo.webp",
+    isInsurance: true,
+    badgeText: "Mạng lưới bảo hiểm",
+    slotPrice: "Bảo lãnh 100%",
+    specialty: "Bệnh viện thú y đa khoa • Cấp cứu 24/7 & Ngoại khoa",
+    phone: "028 3744 2505",
+    note: "Bảo lãnh viện phí trực tiếp qua PetID. Miễn phí khám định kỳ trong hạn mức bảo hiểm.",
+  },
+  {
+    id: "2vet",
+    name: "Hệ thống Thú y 2Vet",
+    address: "128 Chu Văn An, Phường 26, Quận Bình Thạnh, TP.HCM",
+    district: "Bình Thạnh",
+    city: "TP.HCM",
+    logo: "https://2vet.vn/wp-content/uploads/2024/06/logo.png",
+    isInsurance: true,
+    badgeText: "Mạng lưới bảo hiểm",
+    slotPrice: "Bảo lãnh 100%",
+    specialty: "Chẩn đoán hình ảnh • Xét nghiệm sinh hóa & Phẫu thuật",
+    phone: "0986 998 126",
+    note: "Đối tác liên kết bảo hiểm chiến lược. Hỗ trợ đối soát và thanh toán bảo hiểm tức thì.",
+  },
+  {
+    id: "tropicpet",
+    name: "Bệnh viện Thú y Tropicpet",
+    address: "88 Nguyễn Thị Định, Trung Hòa, Quận Cầu Giấy, Hà Nội",
+    district: "Cầu Giấy",
+    city: "Hà Nội",
+    logo: "https://tropicpet.vn/wp-content/uploads/2023/07/cropped-favicon-1.png",
+    isInsurance: true,
+    badgeText: "Mạng lưới bảo hiểm",
+    slotPrice: "Bảo lãnh 100%",
+    specialty: "Nội trú chuyên biệt • Khám & điều trị toàn diện",
+    phone: "0862 888 115",
+    note: "Cơ sở bảo lãnh viện phí khu vực miền Bắc. Đặt lịch ưu tiên không chờ đợi.",
+  },
+
+  // Đối tác phòng khám bán slot đặt khám (Không tham gia bảo hiểm)
+  {
+    id: "thithi",
+    name: "Phòng khám Thú y Thi Thi",
+    address: "62A Phan Văn Hân, Phường 17, Quận Bình Thạnh, TP.HCM",
+    district: "Bình Thạnh",
+    city: "TP.HCM",
+    logo: "https://thithipet.com/wp-content/uploads/2021/04/logo-thithi-pet-1.png",
+    isInsurance: false,
+    badgeText: "Bán slot khám (Không bảo hiểm)",
+    slotPrice: "100.000₫ / slot",
+    specialty: "Khám dịch vụ đa khoa • Da liễu, Siêu âm & Tiêm chủng lẻ",
+    phone: "0978 899 004",
+    note: "Đối tác bán slot đặt khám ưu tiên. KHÔNG tham gia bảo lãnh viện phí PetCare+, khách hàng tự chi trả chi phí y tế tại quầy phòng khám.",
+  },
+  {
+    id: "samyang",
+    name: "Samyang Animal Clinic",
+    address: "116 Nguyễn Thị Thập, KĐT Him Lam, Quận 7, TP.HCM",
+    district: "Quận 7",
+    city: "TP.HCM",
+    logo: "https://samyanganimalclinic.com/wp-content/uploads/2023/05/logo-samyang.png",
+    isInsurance: false,
+    badgeText: "Bán slot khám (Không bảo hiểm)",
+    slotPrice: "120.000₫ / slot",
+    specialty: "Chuyên khoa da liễu & Phẫu thuật thú nhỏ chuẩn Hàn Quốc",
+    phone: "028 6275 8899",
+    note: "Phòng khám bán slot hẹn chuyên gia. Không áp dụng chính sách bảo lãnh bảo hiểm PetCare+, thanh toán trực tiếp tại phòng khám.",
+  },
+  {
+    id: "procare",
+    name: "Phòng khám Thú y Procare",
+    address: "144 Nguyễn Thái Bình, Phường 12, Quận Tân Bình, TP.HCM",
+    district: "Tân Bình",
+    city: "TP.HCM",
+    logo: "https://thuyprocare.com/wp-content/uploads/2020/09/logo-procare.png",
+    isInsurance: false,
+    badgeText: "Bán slot khám (Không bảo hiểm)",
+    slotPrice: "80.000₫ / slot",
+    specialty: "Nội khoa thú nhỏ • Nha khoa & Chẩn đoán hình ảnh kỹ thuật số",
+    phone: "028 3948 1111",
+    note: "Bán slot giữ chỗ khám nhanh giờ cao điểm. Không trừ viện phí vào hợp đồng bảo hiểm PetCare+.",
+  },
+  {
+    id: "pethealth",
+    name: "Bệnh viện Thú y PetHealth",
+    address: "240 Âu Cơ, Phường Quảng An, Quận Tây Hồ, Hà Nội",
+    district: "Tây Hồ",
+    city: "Hà Nội",
+    logo: "https://pethealth.vn/wp-content/uploads/2020/06/logo-pethealth.png",
+    isInsurance: false,
+    badgeText: "Bán slot khám (Không bảo hiểm)",
+    slotPrice: "100.000₫ / slot",
+    specialty: "Đa khoa khám chữa bệnh • Cấp cứu lưu động & Phẫu thuật nội soi",
+    phone: "024 2242 8882",
+    note: "Đối tác bán slot đặt lịch khám trước tại Hà Nội. Không tham gia mạng lưới bảo lãnh PetCare+, viện phí thanh toán tại quầy.",
+  },
+]
+
 export const PETS = [
   { id: 1, name: "Mochi", type: "Mèo cái • 3 tuổi 2 tháng" },
   { id: 2, name: "Bông", type: "Chó đực • 5 tuổi 1 tháng" },
