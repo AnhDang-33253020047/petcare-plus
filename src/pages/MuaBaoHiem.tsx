@@ -46,7 +46,7 @@ const INSURANCE_PLANS = [
         "Bệnh truyền nhiễm cấp tính (FPV, FIP, Cúm mèo, Parvo, Care).",
         "Nhiễm trùng hệ tiêu hóa & tiết niệu (Tắc nghẽn niệu đạo).",
         "Chi phí khám & điều trị nội/ngoại trú, xét nghiệm y khoa.",
-        "TẶNG QUYỀN LỢI WELLNESS: Miễn phí 01 mũi tiêm phòng/năm.",
+        "TẶNG QUYỀN LỢI WELLNESS: Miễn phí sổ giun và 1 mũi tiêm phòng dại.",
       ],
       exclusions: [
         "Thẩm mỹ & Làm đẹp (Cắt móng, cắt tai, nhuộm lông, spa...).",
