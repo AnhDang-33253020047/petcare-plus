@@ -186,9 +186,9 @@ export default function DatLichHen() {
             </div>
 
             {/* 2. CHỌN CƠ SỞ THÚ Y (THEO ĐÚNG LAYOUT ẢNH) */}
-            <div className="mb-8">
+            <div className="mb-6">
               <h3
-                className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2.5"
+                className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
@@ -197,20 +197,21 @@ export default function DatLichHen() {
                 Chọn cơ sở thú y
               </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {partnerClinics.map((clinic) => {
                   const isSelected = selectedClinic === clinic.id
                   return (
                     <div
                       key={clinic.id}
                       onClick={() => setSelectedClinic(clinic.id)}
-                      className={`cursor-pointer rounded-2xl p-4 border transition-all flex flex-col items-center text-center justify-center min-h-[148px] ${
+                      className={`cursor-pointer rounded-2xl py-3 px-3 border transition-all flex flex-col items-center text-center justify-center ${
                         isSelected
-                          ? "border-emerald-500 bg-emerald-50/15 shadow-sm ring-1 ring-emerald-500/30"
+                          ? "border-emerald-500 bg-emerald-50/20 shadow-xs ring-1 ring-emerald-500/30"
                           : "border-gray-200/80 hover:border-gray-300 bg-white"
                       }`}
                     >
-                      <div className="h-10 w-full flex items-center justify-center mb-2.5">
+                      {/* Logo thu gọn chiều cao */}
+                      <div className="h-8 w-full flex items-center justify-center mb-1.5">
                         {clinic.logo ? (
                           <img
                             src={clinic.logo}
@@ -218,17 +219,19 @@ export default function DatLichHen() {
                             onError={(e) => {
                               e.currentTarget.style.display = "none"
                             }}
-                            className="max-h-8 max-w-[120px] object-contain"
+                            className="max-h-7 max-w-[110px] object-contain"
                           />
                         ) : (
-                          <span className="text-2xl">🏥</span>
+                          <span className="text-xl">🏥</span>
                         )}
                       </div>
+
+                      {/* Tên & địa chỉ ôm sát */}
                       <div>
                         <div className="font-bold text-[13px] text-gray-900 leading-snug">
                           {clinic.name}
                         </div>
-                        <div className="text-[11px] text-gray-400 mt-1 leading-normal max-w-[180px] mx-auto">
+                        <div className="text-[11px] text-gray-400 mt-0.5 leading-tight">
                           {clinic.address}
                         </div>
                       </div>
@@ -238,11 +241,11 @@ export default function DatLichHen() {
               </div>
             </div>
 
-            {/* 3. CHỌN DỊCH VỤ (THEO ĐÚNG LAYOUT ẢNH) */}
-            <div className="mb-8">
-              <div className="mb-3.5">
+            {/* 3. CHỌN DỊCH VỤ - FIT NỘI DUNG */}
+            <div className="mb-6">
+              <div className="mb-3">
                 <h3
-                  className="text-base font-bold text-gray-900 flex items-center gap-2.5"
+                  className="text-base font-bold text-gray-900 flex items-center gap-2"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
@@ -250,31 +253,31 @@ export default function DatLichHen() {
                   </span>
                   Chọn dịch vụ
                 </h3>
-                <p className="text-xs text-gray-400 italic ml-7 mt-1">
+                <p className="text-xs text-gray-400 italic ml-7 mt-0.5">
                   *Chi phí khám đã bao gồm trong gói bảo hiểm đã mua.
                 </p>
               </div>
 
-              {/* Hàng 1: 3 dịch vụ */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+              {/* Hàng 1: 3 dịch vụ ôm sát vừa vặn */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 mb-2.5">
                 {SERVICES_ROW_1.map((service) => (
                   <div
                     key={service.id}
                     onClick={() => setSelectedService(service.id)}
-                    className={`cursor-pointer rounded-2xl p-3.5 border transition-all flex items-center justify-center gap-3 ${
+                    className={`cursor-pointer rounded-xl py-2 px-3 border transition-all flex items-center justify-center gap-2 ${
                       selectedService === service.id
-                        ? "border-emerald-500 bg-emerald-50/20 text-emerald-800 font-bold"
+                        ? "border-emerald-500 bg-emerald-50/25 text-emerald-800 font-bold shadow-2xs"
                         : "border-gray-200/80 text-gray-700 hover:bg-gray-50/70 font-medium"
                     }`}
                   >
-                    <span className="text-xl">{service.icon}</span>
-                    <span className="text-xs text-center leading-snug">{service.label}</span>
+                    <span className="text-base">{service.icon}</span>
+                    <span className="text-xs text-center leading-tight">{service.label}</span>
                   </div>
                 ))}
               </div>
 
-              {/* Hàng 2: 2 dịch vụ căn giữa */}
-              <div className="flex flex-col sm:flex-row justify-center gap-3">
+              {/* Hàng 2: 2 dịch vụ căn giữa, độ rộng fit theo nội dung */}
+              <div className="flex flex-col sm:flex-row justify-center gap-2.5">
                 {SERVICES_ROW_2.map((service) => (
                   <div
                     key={service.id}
@@ -287,14 +290,14 @@ export default function DatLichHen() {
                         setIsMinuteOpen(false)
                       }
                     }}
-                    className={`cursor-pointer rounded-2xl p-3.5 border transition-all flex items-center justify-center gap-3 sm:w-[200px] ${
+                    className={`cursor-pointer rounded-xl py-2 px-4 border transition-all flex items-center justify-center gap-2 sm:min-w-[170px] ${
                       selectedService === service.id
-                        ? "border-emerald-500 bg-emerald-50/20 text-emerald-800 font-bold"
+                        ? "border-emerald-500 bg-emerald-50/25 text-emerald-800 font-bold shadow-2xs"
                         : "border-gray-200/80 text-gray-700 hover:bg-gray-50/70 font-medium"
                     }`}
                   >
-                    <span className="text-xl">{service.icon}</span>
-                    <span className="text-xs text-center leading-snug">{service.label}</span>
+                    <span className="text-base">{service.icon}</span>
+                    <span className="text-xs text-center leading-tight">{service.label}</span>
                   </div>
                 ))}
               </div>
