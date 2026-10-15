@@ -21,27 +21,53 @@ const HOURS = Array.from({ length: 13 }, (_, i) =>
 const MINUTES = ["00", "30"]
 
 export default function DatLichHen() {
-  const { activePet } = (usePet() as any) || {}
+  const { activePet } = usePet() as any || {}
 
-  // 3 phòng khám đối tác bảo hiểm chính thức
+  // Danh sách TẤT CẢ phòng khám (Bao gồm có bảo hiểm và không bảo hiểm)
   const partnerClinics = [
+    // --- CÓ BÁN BẢO HIỂM ---
     {
       id: "petcare",
       name: "Bệnh viện Thú y PetCare",
       address: "124A Xuân Thủy, phường An Khánh, TP.HCM",
       logo: CLINICS.find((c) => c.id === "petcare")?.logo || "",
+      hasInsurance: true,
     },
     {
       id: "2vet",
       name: "Hệ thống Thú y 2Vet",
       address: "128 Chu Văn An, phường Bình Thạnh, TP. HCM",
       logo: CLINICS.find((c) => c.id === "2vet")?.logo || "",
+      hasInsurance: true,
     },
     {
       id: "tropicpet",
       name: "Phòng khám Tropicpet",
       address: "88 Nguyễn Thị Định, Cầu Giấy, Hà Nội",
       logo: CLINICS.find((c) => c.id === "tropicpet")?.logo || "",
+      hasInsurance: true,
+    },
+    // --- KHÔNG BÁN BẢO HIỂM ---
+    {
+      id: "saigonpet",
+      name: "Phòng khám Saigon Pet",
+      address: "33 Đường 41, Thảo Điền, TP. Thủ Đức",
+      logo: "https://saigonpet.com/wp-content/uploads/2024/07/logo.png",
+      hasInsurance: false,
+    },
+    {
+      id: "procare",
+      name: "Phòng khám Thú y ProCare",
+      address: "125 Lê Văn Sỹ, Phường 13, Quận Phú Nhuận",
+      logo: "https://thuyprocare.com/upload/images/logo%20procare%20CHU%E1%BA%A8N%20M%C3%80U%20webfooter.png",
+      hasInsurance: false,
+    },
+    {
+      id: "animaldoctor",
+      name: "The Animal Doctors International",
+      address: "1 Trần Ngọc Diện, Thảo Điền, TP. Thủ Đức",
+      logo: "https://www.theanimaldoctors.org/wp-content/uploads/2023/02/logo-main.svg",
+      hasInsurance: false,
     },
   ]
 
@@ -59,6 +85,20 @@ export default function DatLichHen() {
 
   const hourRef = useRef<HTMLDivElement>(null)
   const minuteRef = useRef<HTMLDivElement>(null)
+
+  // Lấy thông tin phòng khám đang được chọn
+  const activeClinic = partnerClinics.find((c) => c.id === selectedClinic)
+
+  // Tự động bỏ chọn "Khám sơ bộ duyệt bảo hiểm" nếu đổi sang phòng khám không bán bảo hiểm
+  useEffect(() => {
+    if (
+      activeClinic &&
+      !activeClinic.hasInsurance &&
+      selectedService === "kham-so-bo"
+    ) {
+      setSelectedService("kham-tong-quat")
+    }
+  }, [selectedClinic, activeClinic, selectedService])
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -80,15 +120,22 @@ export default function DatLichHen() {
     const urlParams = new URLSearchParams(window.location.search)
     const service = urlParams.get("service")
     if (service) {
-      setSelectedService(service)
+      // Chỉ set service từ URL nếu phòng khám hiện tại có hỗ trợ (trường hợp kham-so-bo)
+      if (
+        service === "kham-so-bo" &&
+        activeClinic &&
+        !activeClinic.hasInsurance
+      ) {
+        setSelectedService("kham-tong-quat")
+      } else {
+        setSelectedService(service)
+      }
     }
-  }, [])
+  }, [activeClinic])
 
   const isEmergency = selectedService === "cap-cuu"
-  const activeClinic = partnerClinics.find((c) => c.id === selectedClinic)
 
   const handleConfirm = () => {
-    // Giữ nguyên action flow mở login modal nếu chưa đăng nhập pet
     if (!activePet) {
       window.dispatchEvent(new Event("openLoginPopup"))
       return
@@ -120,7 +167,6 @@ export default function DatLichHen() {
   return (
     <section className="py-10 md:py-16 bg-[#f8fafc] min-h-screen relative">
       <div className="max-w-[1240px] mx-auto px-4 md:px-8">
-        
         {/* TIÊU ĐỀ TRANG */}
         <div className="mb-10 text-center max-w-3xl mx-auto">
           <h1
@@ -133,17 +179,15 @@ export default function DatLichHen() {
             </span>
           </h1>
           <p className="text-sm md:text-base text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Trải nghiệm dịch vụ y tế thú cưng chuẩn quốc tế. Ưu tiên khám không chờ
-            đợi và bảo lãnh viện phí trực tiếp cho khách hàng PetCare+.
+            Trải nghiệm dịch vụ y tế thú cưng chuẩn quốc tế. Ưu tiên khám không
+            chờ đợi và bảo lãnh viện phí trực tiếp cho khách hàng PetCare+.
           </p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">
-          
           {/* CỘT TRÁI: FORM ĐẶT LỊCH */}
           <div className="flex-1 w-full bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100">
-            
-            {/* 1. HỒ SƠ THÚ CƯNG (GIỮ NGUYÊN LOGIN ACTION FLOW) */}
+            {/* 1. HỒ SƠ THÚ CƯNG */}
             <div className="mb-8">
               <h3
                 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2.5"
@@ -154,17 +198,23 @@ export default function DatLichHen() {
                 </span>
                 Hồ sơ thú cưng
               </h3>
-              
+
               {activePet ? (
                 <div className="flex items-center justify-between p-4 rounded-2xl border border-emerald-300 bg-emerald-50/20">
                   <div>
-                    <div className="font-bold text-gray-900 text-sm">{activePet.name}</div>
+                    <div className="font-bold text-gray-900 text-sm">
+                      {activePet.name}
+                    </div>
                     <div className="text-xs text-emerald-600 font-medium mt-0.5">
-                      {activePet.species === "cat" ? "Mèo" : "Chó"} • {activePet.gender || "♂"} • {activePet.desc || activePet.age || "3 tuổi"}
+                      {activePet.species === "cat" ? "Mèo" : "Chó"} •{" "}
+                      {activePet.gender || "♂"} •{" "}
+                      {activePet.desc || activePet.age || "3 tuổi"}
                     </div>
                   </div>
                   <button
-                    onClick={() => window.dispatchEvent(new Event("openLoginPopup"))}
+                    onClick={() =>
+                      window.dispatchEvent(new Event("openLoginPopup"))
+                    }
                     className="text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors"
                   >
                     Đổi hồ sơ
@@ -176,7 +226,9 @@ export default function DatLichHen() {
                     Bạn chưa chọn hồ sơ thú cưng nào để đặt lịch.
                   </div>
                   <button
-                    onClick={() => window.dispatchEvent(new Event("openLoginPopup"))}
+                    onClick={() =>
+                      window.dispatchEvent(new Event("openLoginPopup"))
+                    }
                     className="px-5 py-2 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-800 transition-colors"
                   >
                     Đăng nhập / Chọn hồ sơ
@@ -185,8 +237,8 @@ export default function DatLichHen() {
               )}
             </div>
 
-            {/* 2. CHỌN CƠ SỞ THÚ Y (THEO ĐÚNG LAYOUT ẢNH) */}
-            <div className="mb-6">
+            {/* 2. CHỌN CƠ SỞ THÚ Y */}
+            <div className="mb-8">
               <h3
                 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2"
                 style={{ fontFamily: "var(--font-display)" }}
@@ -197,42 +249,55 @@ export default function DatLichHen() {
                 Chọn cơ sở thú y
               </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {partnerClinics.map((clinic) => {
                   const isSelected = selectedClinic === clinic.id
                   return (
                     <div
                       key={clinic.id}
                       onClick={() => setSelectedClinic(clinic.id)}
-                      className={`cursor-pointer rounded-2xl py-3 px-3 border transition-all flex flex-col items-center text-center justify-center ${
+                      className={`cursor-pointer rounded-2xl p-3 border transition-all flex flex-col relative ${
                         isSelected
                           ? "border-emerald-500 bg-emerald-50/20 shadow-xs ring-1 ring-emerald-500/30"
-                          : "border-gray-200/80 hover:border-gray-300 bg-white"
+                          : "border-gray-200 hover:border-gray-300 bg-white"
                       }`}
                     >
-                      {/* Logo thu gọn chiều cao */}
-                      <div className="h-8 w-full flex items-center justify-center mb-1.5">
-                        {clinic.logo ? (
-                          <img
-                            src={clinic.logo}
-                            alt={clinic.name}
-                            onError={(e) => {
-                              e.currentTarget.style.display = "none"
-                            }}
-                            className="max-h-7 max-w-[110px] object-contain"
-                          />
-                        ) : (
-                          <span className="text-xl">🏥</span>
-                        )}
-                      </div>
-
-                      {/* Tên & địa chỉ ôm sát */}
-                      <div>
-                        <div className="font-bold text-[13px] text-gray-900 leading-snug">
-                          {clinic.name}
+                      {/* Badge phân loại đối tác */}
+                      {clinic.hasInsurance ? (
+                        <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-bl-lg rounded-tr-xl flex items-center gap-1 shadow-sm">
+                          <span>🛡️</span> Bảo lãnh viện phí
                         </div>
-                        <div className="text-[11px] text-gray-400 mt-0.5 leading-tight">
-                          {clinic.address}
+                      ) : (
+                        <div className="absolute top-0 right-0 bg-gray-200 text-gray-600 text-[9px] font-bold px-2 py-0.5 rounded-bl-lg rounded-tr-xl flex items-center gap-1 shadow-sm">
+                          <span>🏥</span> Đối tác y tế
+                        </div>
+                      )}
+
+                      <div className="flex flex-col items-center text-center mt-3 h-full justify-between">
+                        {/* Logo */}
+                        <div className="h-9 w-full flex items-center justify-center mb-2">
+                          {clinic.logo ? (
+                            <img
+                              src={clinic.logo}
+                              alt={clinic.name}
+                              onError={(e) => {
+                                e.currentTarget.style.display = "none"
+                              }}
+                              className="max-h-8 max-w-[110px] object-contain"
+                            />
+                          ) : (
+                            <span className="text-2xl">🏥</span>
+                          )}
+                        </div>
+
+                        {/* Tên & địa chỉ */}
+                        <div>
+                          <div className="font-bold text-[13px] text-gray-900 leading-tight mb-1">
+                            {clinic.name}
+                          </div>
+                          <div className="text-[11px] text-gray-500 leading-tight mt-1">
+                            {clinic.address}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -241,7 +306,7 @@ export default function DatLichHen() {
               </div>
             </div>
 
-            {/* 3. CHỌN DỊCH VỤ - FIT NỘI DUNG */}
+            {/* 3. CHỌN DỊCH VỤ */}
             <div className="mb-6">
               <div className="mb-3">
                 <h3
@@ -253,30 +318,46 @@ export default function DatLichHen() {
                   </span>
                   Chọn dịch vụ
                 </h3>
-                <p className="text-xs text-gray-400 italic ml-7 mt-0.5">
-                  *Chi phí khám đã bao gồm trong gói bảo hiểm đã mua.
-                </p>
+                {activeClinic?.hasInsurance && (
+                  <p className="text-xs text-gray-400 italic ml-7 mt-0.5">
+                    *Khách hàng mua bảo hiểm được bảo lãnh tự động chi phí khám
+                    chữa bệnh.
+                  </p>
+                )}
               </div>
 
-              {/* Hàng 1: 3 dịch vụ ôm sát vừa vặn */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 mb-2.5">
-                {SERVICES_ROW_1.map((service) => (
-                  <div
-                    key={service.id}
-                    onClick={() => setSelectedService(service.id)}
-                    className={`cursor-pointer rounded-xl py-2 px-3 border transition-all flex items-center justify-center gap-2 ${
-                      selectedService === service.id
-                        ? "border-emerald-500 bg-emerald-50/25 text-emerald-800 font-bold shadow-2xs"
-                        : "border-gray-200/80 text-gray-700 hover:bg-gray-50/70 font-medium"
-                    }`}
-                  >
-                    <span className="text-base">{service.icon}</span>
-                    <span className="text-xs text-center leading-tight">{service.label}</span>
-                  </div>
-                ))}
+              {/* Hàng 1 */}
+              <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-2.5 mb-2.5">
+                {SERVICES_ROW_1.map((service) => {
+                  // Ẩn dịch vụ khám sơ bộ nếu PK không có bảo hiểm
+                  if (
+                    service.id === "kham-so-bo" &&
+                    activeClinic &&
+                    !activeClinic.hasInsurance
+                  ) {
+                    return null
+                  }
+
+                  return (
+                    <div
+                      key={service.id}
+                      onClick={() => setSelectedService(service.id)}
+                      className={`cursor-pointer rounded-xl py-2.5 px-4 border transition-all flex items-center justify-center gap-2 sm:min-w-[170px] ${
+                        selectedService === service.id
+                          ? "border-emerald-500 bg-emerald-50/25 text-emerald-800 font-bold shadow-2xs"
+                          : "border-gray-200/80 text-gray-700 hover:bg-gray-50/70 font-medium"
+                      }`}
+                    >
+                      <span className="text-base">{service.icon}</span>
+                      <span className="text-xs text-center leading-tight">
+                        {service.label}
+                      </span>
+                    </div>
+                  )
+                })}
               </div>
 
-              {/* Hàng 2: 2 dịch vụ căn giữa, độ rộng fit theo nội dung */}
+              {/* Hàng 2 */}
               <div className="flex flex-col sm:flex-row justify-center gap-2.5">
                 {SERVICES_ROW_2.map((service) => (
                   <div
@@ -297,7 +378,9 @@ export default function DatLichHen() {
                     }`}
                   >
                     <span className="text-base">{service.icon}</span>
-                    <span className="text-xs text-center leading-tight">{service.label}</span>
+                    <span className="text-xs text-center leading-tight">
+                      {service.label}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -354,7 +437,9 @@ export default function DatLichHen() {
                         <span>{selectedHour || "Giờ"}</span>
                         <svg
                           className={`w-4 h-4 transition-transform ${
-                            isHourOpen ? "rotate-180 text-emerald-600" : "text-gray-400"
+                            isHourOpen
+                              ? "rotate-180 text-emerald-600"
+                              : "text-gray-400"
                           }`}
                           fill="none"
                           viewBox="0 0 24 24"
@@ -409,7 +494,9 @@ export default function DatLichHen() {
                         <span>{selectedMinute || "Phút"}</span>
                         <svg
                           className={`w-4 h-4 transition-transform ${
-                            isMinuteOpen ? "rotate-180 text-emerald-600" : "text-gray-400"
+                            isMinuteOpen
+                              ? "rotate-180 text-emerald-600"
+                              : "text-gray-400"
                           }`}
                           fill="none"
                           viewBox="0 0 24 24"
@@ -484,10 +571,8 @@ export default function DatLichHen() {
             </div>
           </div>
 
-          {/* CỘT PHẢI: BANNER BẢO HIỂM ĐÃ KÍCH HOẠT */}
+          {/* CỘT PHẢI: BANNER THEO LOẠI ĐỐI TÁC */}
           <div className="w-full lg:w-[380px] flex-shrink-0 flex flex-col gap-6">
-            
-            {/* Ảnh phòng khám & Badge bảo lãnh viện phí */}
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden relative">
               <img
                 src="https://www.kinganimalhospital.com/wp-content/uploads/2024/02/114-web-or-mls-King-Animal-Hospital-114.jpg"
@@ -495,42 +580,75 @@ export default function DatLichHen() {
                 className="w-full h-[240px] md:h-[270px] object-cover"
               />
 
-              <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-2xl p-3 shadow-md border border-gray-100 flex items-center gap-3 pr-5">
-                <div className="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-500 shrink-0">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                    />
-                  </svg>
+              {activeClinic?.hasInsurance ? (
+                <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-2xl p-3 shadow-md border border-gray-100 flex items-center gap-3 pr-5">
+                  <div className="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-500 shrink-0">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-gray-500 font-medium leading-none mb-1">
+                      Cơ sở chấp nhận
+                    </p>
+                    <p className="text-sm font-bold text-emerald-700 leading-none whitespace-nowrap">
+                      Bảo lãnh viện phí
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[11px] text-gray-500 font-medium leading-none mb-1">
-                    Đã kích hoạt
-                  </p>
-                  <p className="text-sm font-bold text-gray-900 leading-none whitespace-nowrap">
-                    Bảo lãnh viện phí
-                  </p>
+              ) : (
+                <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-2xl p-3 shadow-md border border-gray-100 flex items-center gap-3 pr-5">
+                  <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-500 shrink-0">
+                    <span className="text-lg">🏥</span>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-gray-500 font-medium leading-none mb-1">
+                      Đối tác y tế
+                    </p>
+                    <p className="text-sm font-bold text-blue-700 leading-none whitespace-nowrap">
+                      Chất lượng cao
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
-            {/* Danh sách 4 đặc quyền */}
+            {/* Thông tin quyền lợi thay đổi theo loại đối tác */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
               <h3
                 className="text-base font-bold text-gray-900 mb-4"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                Đặc quyền khi tham gia bảo hiểm với PetCare+
+                {activeClinic?.hasInsurance
+                  ? "Đặc quyền khi tham gia bảo hiểm với PetCare+"
+                  : "Quyền lợi khi đặt lịch qua PetCare+"}
               </h3>
 
               <ul className="space-y-4">
                 <li className="flex gap-3">
                   <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={3}
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                   </div>
                   <div>
@@ -538,31 +656,26 @@ export default function DatLichHen() {
                       Ưu tiên khám ngay
                     </h4>
                     <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
-                      Hệ thống đồng bộ dữ liệu giúp bạn không cần bốc số hay chờ đợi tại phòng khám.
+                      Hệ thống đồng bộ dữ liệu giúp bạn không cần bốc số hay chờ
+                      đợi tại phòng khám.
                     </p>
                   </div>
                 </li>
 
                 <li className="flex gap-3">
                   <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-xs">
-                      Mở khóa đặc quyền Wellness
-                    </h4>
-                    <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
-                      Tiêm phòng hằng năm, triệt sản... hoàn toàn miễn phí khi mua thành công gói bảo hiểm.
-                    </p>
-                  </div>
-                </li>
-
-                <li className="flex gap-3">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={3}
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                   </div>
                   <div>
@@ -570,30 +683,72 @@ export default function DatLichHen() {
                       Số hóa qua PetID
                     </h4>
                     <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
-                      Toàn bộ kết quả xét nghiệm, đơn thuốc được lưu trữ ngay trên tài khoản của bạn.
+                      Toàn bộ kết quả xét nghiệm, đơn thuốc được lưu trữ ngay
+                      trên tài khoản của bạn.
                     </p>
                   </div>
                 </li>
 
-                <li className="flex gap-3">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-xs">
-                      Tự động đối trừ viện phí
-                    </h4>
-                    <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
-                      Chi phí khám chữa bệnh sẽ được đối trừ trực tiếp vào hạn mức bảo hiểm hiện có.
-                    </p>
-                  </div>
-                </li>
+                {activeClinic?.hasInsurance && (
+                  <>
+                    <li className="flex gap-3">
+                      <div className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 mt-0.5">
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={3}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-900 text-xs">
+                          Mở khóa đặc quyền Wellness
+                        </h4>
+                        <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
+                          Tiêm phòng hằng năm, triệt sản... hoàn toàn miễn phí
+                          khi mua thành công gói bảo hiểm.
+                        </p>
+                      </div>
+                    </li>
+
+                    <li className="flex gap-3">
+                      <div className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 mt-0.5">
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={3}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-900 text-xs">
+                          Tự động đối trừ viện phí
+                        </h4>
+                        <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
+                          Chi phí khám chữa bệnh sẽ được đối trừ trực tiếp vào
+                          hạn mức bảo hiểm hiện có.
+                        </p>
+                      </div>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -605,8 +760,12 @@ export default function DatLichHen() {
         >
           <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden relative shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             <div className="p-6 md:p-8 flex flex-col items-center text-center">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4 bg-emerald-100 text-emerald-600 text-2xl">
-                🎉
+              <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4 bg-emerald-100/50">
+                <img
+                  src="https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Eo_circle_green_white_checkmark.svg/3840px-Eo_circle_green_white_checkmark.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail"
+                  alt="Success"
+                  className="w-8 h-8 object-contain"
+                />
               </div>
 
               <h3
@@ -628,7 +787,8 @@ export default function DatLichHen() {
                     Thú cưng & Cơ sở khám
                   </p>
                   <p className="font-bold text-gray-900">
-                    {activePet?.name} ({activePet?.species === "cat" ? "Mèo" : "Chó"})
+                    {activePet?.name} (
+                    {activePet?.species === "cat" ? "Mèo" : "Chó"})
                   </p>
                   <p className="text-emerald-700 font-semibold mt-0.5">
                     {activeClinic?.name}
@@ -660,9 +820,18 @@ export default function DatLichHen() {
                 </div>
 
                 <div className="pt-2 border-t border-gray-200">
-                  <p className="text-emerald-700 leading-relaxed font-medium text-[11px]">
-                    ✓ Chi phí đã được bảo lãnh viện phí đối trừ tự động. Khi đến nơi, bạn chỉ cần xuất trình mã PetID trên hệ thống để được tiếp nhận khám ngay.
-                  </p>
+                  {activeClinic?.hasInsurance ? (
+                    <p className="text-emerald-700 leading-relaxed font-medium text-[11px]">
+                      Chi phí đã được bảo lãnh viện phí đối trừ tự động. Khi đến
+                      nơi, cần xuất trình mã PetID trên hệ thống để được tiếp
+                      nhận khám ngay.
+                    </p>
+                  ) : (
+                    <p className="text-blue-700 leading-relaxed font-medium text-[11px]">
+                      Lịch hẹn đã được xác nhận. Vui lòng thanh toán chi phí
+                      trực tiếp tại phòng khám.
+                    </p>
+                  )}
                 </div>
               </div>
 
