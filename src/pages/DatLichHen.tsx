@@ -265,11 +265,11 @@ export default function DatLichHen() {
                       {/* Badge phân loại đối tác */}
                       {clinic.hasInsurance ? (
                         <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-bl-lg rounded-tr-xl flex items-center gap-1 shadow-sm">
-                          <span>🛡️</span> Bảo lãnh viện phí
+                          Bảo lãnh viện phí
                         </div>
                       ) : (
                         <div className="absolute top-0 right-0 bg-gray-200 text-gray-600 text-[9px] font-bold px-2 py-0.5 rounded-bl-lg rounded-tr-xl flex items-center gap-1 shadow-sm">
-                          <span>🏥</span> Đối tác y tế
+                          Đối tác y tế
                         </div>
                       )}
 
