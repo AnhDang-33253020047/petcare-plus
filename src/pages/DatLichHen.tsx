@@ -71,8 +71,8 @@ export default function DatLichHen() {
     },
   ]
 
-  const [selectedClinic, setSelectedClinic] = useState<string>("petcare")
-  const [selectedService, setSelectedService] = useState<string>("kham-so-bo")
+  const [selectedClinic, setSelectedClinic] = useState<string>("")
+  const [selectedService, setSelectedService] = useState<string>("")
 
   const [selectedDate, setSelectedDate] = useState<string>("")
   const [selectedHour, setSelectedHour] = useState<string>("")
@@ -96,7 +96,7 @@ export default function DatLichHen() {
       !activeClinic.hasInsurance &&
       selectedService === "kham-so-bo"
     ) {
-      setSelectedService("kham-tong-quat")
+      setSelectedService("")
     }
   }, [selectedClinic, activeClinic, selectedService])
 
@@ -115,23 +115,6 @@ export default function DatLichHen() {
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search)
-    const service = urlParams.get("service")
-    if (service) {
-      // Chỉ set service từ URL nếu phòng khám hiện tại có hỗ trợ (trường hợp kham-so-bo)
-      if (
-        service === "kham-so-bo" &&
-        activeClinic &&
-        !activeClinic.hasInsurance
-      ) {
-        setSelectedService("kham-tong-quat")
-      } else {
-        setSelectedService(service)
-      }
-    }
-  }, [activeClinic])
 
   const isEmergency = selectedService === "cap-cuu"
 
@@ -318,10 +301,18 @@ export default function DatLichHen() {
                   </span>
                   Chọn dịch vụ
                 </h3>
-                {activeClinic?.hasInsurance && (
+                {!activeClinic ? (
+                  <p className="text-xs text-amber-600 font-medium ml-7 mt-0.5">
+                    *Vui lòng chọn cơ sở thú y ở Bước 2 để xem dịch vụ khả dụng.
+                  </p>
+                ) : activeClinic.hasInsurance ? (
                   <p className="text-xs text-gray-400 italic ml-7 mt-0.5">
                     *Khách hàng mua bảo hiểm được bảo lãnh tự động chi phí khám
                     chữa bệnh.
+                  </p>
+                ) : (
+                  <p className="text-xs text-gray-400 italic ml-7 mt-0.5">
+                    *Dịch vụ khám chữa bệnh tiêu chuẩn không áp dụng bảo lãnh viện phí.
                   </p>
                 )}
               </div>
@@ -580,7 +571,21 @@ export default function DatLichHen() {
                 className="w-full h-[240px] md:h-[270px] object-cover"
               />
 
-              {activeClinic?.hasInsurance ? (
+              {!activeClinic ? (
+                <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-2xl p-3 shadow-md border border-gray-100 flex items-center gap-3 pr-5">
+                  <div className="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-500 shrink-0">
+                    <span className="text-lg">🏥</span>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-gray-500 font-medium leading-none mb-1">
+                      Cơ sở thú y
+                    </p>
+                    <p className="text-sm font-bold text-gray-700 leading-none whitespace-nowrap">
+                      Chưa chọn cơ sở
+                    </p>
+                  </div>
+                </div>
+              ) : activeClinic.hasInsurance ? (
                 <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-2xl p-3 shadow-md border border-gray-100 flex items-center gap-3 pr-5">
                   <div className="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-500 shrink-0">
                     <svg
@@ -629,9 +634,11 @@ export default function DatLichHen() {
                 className="text-base font-bold text-gray-900 mb-4"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                {activeClinic?.hasInsurance
-                  ? "Đặc quyền khi tham gia bảo hiểm với PetCare+"
-                  : "Quyền lợi khi đặt lịch qua PetCare+"}
+                {!activeClinic
+                  ? "Quyền lợi khi đặt lịch qua PetCare+"
+                  : activeClinic.hasInsurance
+                    ? "Đặc quyền khi tham gia bảo hiểm với PetCare+"
+                    : "Quyền lợi khi đặt lịch qua PetCare+"}
               </h3>
 
               <ul className="space-y-4">
@@ -838,6 +845,8 @@ export default function DatLichHen() {
               <button
                 onClick={() => {
                   setShowSuccessModal(false)
+                  setSelectedClinic("")
+                  setSelectedService("")
                   setSelectedDate("")
                   setSelectedHour("")
                   setSelectedMinute("")
