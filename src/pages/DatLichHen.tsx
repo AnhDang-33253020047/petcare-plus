@@ -206,7 +206,7 @@ export default function DatLichHen() {
               ) : (
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl border border-dashed border-gray-300 bg-gray-50">
                   <div className="text-sm text-gray-500">
-                    Bạn chưa chọn hồ sơ thú cưng nào để đặt lịch.
+                    Bạn chưa chọn hồ sơ thú cưng nào để đặt lịch
                   </div>
                   <button
                     onClick={() =>
