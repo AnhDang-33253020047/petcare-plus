@@ -44,7 +44,7 @@ export default function DatLichHen() {
       id: "tropicpet",
       name: "Phòng khám Tropicpet",
       address: "88 Nguyễn Thị Định, Cầu Giấy, Hà Nội",
-      logo: CLINICS.find((c) => c.id === "tropicpet")?.logo || "",
+      logo: "https://tropicpet.vn/wp-content/uploads/2023/07/cropped-favicon-1.png",
       hasInsurance: true,
     },
     // --- KHÔNG BÁN BẢO HIỂM ---
