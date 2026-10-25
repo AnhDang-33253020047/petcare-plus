@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react"
 import { ARTICLES_DATA, ArticleDetail } from "../articlesData"
+import { demoParam } from "../demo"
 
 export default function CamNangChamSoc() {
   const [searchTerm, setSearchTerm] = useState("")
   const [visibleCount, setVisibleCount] = useState(3)
   const [showScrollTop, setShowScrollTop] = useState(false)
-  const [selectedArticle, setSelectedArticle] = useState<ArticleDetail | null>(null)
+  const [selectedArticle, setSelectedArticle] = useState<ArticleDetail | null>(
+    demoParam("demo") === "article" ? ARTICLES_DATA[0] : null,
+  )
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,7 +30,8 @@ export default function CamNangChamSoc() {
   }
 
   const filteredItems = ARTICLES_DATA.filter((item) => {
-    const textToSearch = `${item.title} ${item.excerpt} ${item.category}`.toLowerCase()
+    const textToSearch =
+      `${item.title} ${item.excerpt} ${item.category}`.toLowerCase()
     return textToSearch.includes(searchTerm.toLowerCase())
   })
 
@@ -38,8 +42,8 @@ export default function CamNangChamSoc() {
   return (
     <section className="bg-gray-50 min-h-[calc(100vh-64px)] py-10 md:py-16 relative">
       <div className="max-w-[1200px] mx-auto px-4 md:px-8">
-        <div className="mb-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-          <div className="text-left flex-1 max-w-3xl">
+        <div className="mb-12 flex flex-col items-center">
+          <div className="text-center mx-auto max-w-3xl">
             <h1
               className="text-4xl lg:text-5xl font-black mb-4 leading-tight text-gray-900"
               style={{ fontFamily: "var(--font-display)" }}
@@ -47,13 +51,13 @@ export default function CamNangChamSoc() {
               <span className="text-emerald-600">Chó mèo</span> là{" "}
               <span className="text-orange-500">bạn</span> của con người!
             </h1>
-            <p className="text-base md:text-lg text-gray-600 max-w-2xl leading-relaxed">
-              Tổng hợp những kiến thức, mẹo vặt và hướng dẫn y khoa giúp bạn tự tin
-              nuôi dưỡng những người bạn bốn chân luôn khỏe mạnh.
+            <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              Tổng hợp những kiến thức, mẹo vặt và hướng dẫn y khoa giúp bạn tự
+              tin nuôi dưỡng những người bạn bốn chân luôn khỏe mạnh.
             </p>
           </div>
 
-          <div className="relative w-full lg:w-80 flex-shrink-0">
+          <div className="relative w-full max-w-md mt-6 flex-shrink-0">
             <input
               type="text"
               placeholder="Tìm kiếm bài viết..."
@@ -149,8 +153,18 @@ export default function CamNangChamSoc() {
               className="absolute top-4 right-4 w-10 h-10 bg-white/90 hover:bg-gray-100 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-700 transition-colors z-30 shadow-md border border-gray-100"
               aria-label="Đóng bài viết"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2.5"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
 
@@ -173,7 +187,12 @@ export default function CamNangChamSoc() {
                   {selectedArticle.title}
                 </h1>
                 <div className="text-xs sm:text-sm text-gray-500 flex items-center gap-2 pb-4 border-b border-gray-100">
-                  <span>Chuyên gia: <strong className="text-gray-800">{selectedArticle.author}</strong></span>
+                  <span>
+                    Chuyên gia:{" "}
+                    <strong className="text-gray-800">
+                      {selectedArticle.author}
+                    </strong>
+                  </span>
                 </div>
               </div>
 
@@ -218,8 +237,16 @@ export default function CamNangChamSoc() {
               {/* Lời khuyên bác sĩ thú y (Vet Tip) */}
               <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
                 <h3 className="font-bold text-amber-900 mb-1.5 flex items-center gap-2 text-sm sm:text-base">
-                  <svg className="w-5 h-5 text-amber-600 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  <svg
+                    className="w-5 h-5 text-amber-600 shrink-0"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   Lời khuyên từ Bác sĩ thú y
                 </h3>
@@ -231,8 +258,12 @@ export default function CamNangChamSoc() {
               {/* Banner kêu gọi hành động bảo hiểm */}
               <div className="bg-emerald-600 text-white rounded-2xl p-5 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
-                  <h4 className="font-bold text-base sm:text-lg">Bảo vệ sức khỏe boss cùng PetCare+</h4>
-                  <p className="text-emerald-100 text-xs sm:text-sm">Bảo lãnh viện phí trực tiếp tại hơn 120+ phòng khám đối tác.</p>
+                  <h4 className="font-bold text-base sm:text-lg">
+                    Bảo vệ sức khỏe boss cùng PetCare+
+                  </h4>
+                  <p className="text-emerald-100 text-xs sm:text-sm">
+                    Bảo lãnh viện phí trực tiếp tại hơn 120+ phòng khám đối tác.
+                  </p>
                 </div>
                 <button
                   onClick={() => setSelectedArticle(null)}
@@ -260,8 +291,18 @@ export default function CamNangChamSoc() {
         }}
         title="Lên đầu trang"
       >
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2.5}
+            d="M5 10l7-7m0 0l7 7m-7-7v18"
+          />
         </svg>
       </button>
     </section>
