@@ -42,7 +42,7 @@ export default function CamNangChamSoc() {
         <div className="mb-12 flex flex-col items-center">
           <div className="text-center mx-auto max-w-3xl">
             <h1
-              className="text-3xl md:text-4xl font-black mb-4 leading-tight text-gray-900"
+              className="text-[26px] sm:text-3xl md:text-5xl font-black mb-4 leading-tight text-gray-900"
               style={{ fontFamily: "var(--font-display)" }}
             >
               <span className="text-emerald-600">Chó, mèo</span> là{" "}
