@@ -8,7 +8,6 @@ const HERO_IMAGES = [
   "https://catevolution.com.au/cdn/shop/articles/how_can_i_tell_if_my_cat_is_happy.png?v=1775649203",
 ]
 
-
 const INSURANCE_PLANS = [
   {
     id: "basic",
@@ -198,7 +197,7 @@ export default function MuaBaoHiem() {
         <div className="bg-white rounded-3xl p-5 md:p-6 mb-16 shadow-sm border border-gray-100 flex flex-col-reverse md:flex-row items-stretch gap-8 md:gap-10">
           <div className="flex-1 flex flex-col justify-center">
             <h1
-              className="text-3xl md:text-4xl font-black text-gray-900 mb-5 leading-[1.2]"
+              className="text-2xl md:text-4xl font-black text-gray-900 mb-5 leading-[1.2]"
               style={{ fontFamily: "var(--font-display)" }}
             >
               An tâm chăm sóc <br />
