@@ -530,7 +530,7 @@ export default function MuaBaoHiem() {
               Đăng ký thành công!
             </h3>
             <p className="text-sm text-gray-600 mb-6 leading-relaxed">
-              Hợp đồng bảo hiểm bảo lãnh y tế cho bé{" "}
+              Hợp đồng bảo hiểm bảo lãnh y tế cho{" "}
               <strong className="text-gray-900">{currentPetDisplay.name}</strong> đã được khởi tạo thành công trên hệ thống PetCare+.
             </p>
 
