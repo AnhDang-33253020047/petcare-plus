@@ -45,8 +45,8 @@ export default function CamNangChamSoc() {
               className="text-4xl lg:text-5xl font-black mb-4 leading-tight text-gray-900"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              <span className="text-emerald-600">Chó mèo</span> là{" "}
-              <span className="text-orange-500">bạn</span> của con người!
+              <span className="text-emerald-600">Chó, mèo</span> là{" "}
+              <span className="text-orange-500">bạn</span> của con người
             </h1>
             <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Tổng hợp những kiến thức, mẹo vặt và hướng dẫn y khoa giúp bạn tự
