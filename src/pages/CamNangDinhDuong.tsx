@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { demoParam } from "../demo"
 import { PRODUCTS, em, or, orDark } from "../data"
 import { usePet } from "../context/PetContext"
 
@@ -154,9 +153,7 @@ export default function CamNangDinhDuong() {
   const [filterType, setFilterType] = useState<"all" | "dog" | "cat">("all")
 
   // State để quản lý Pop-up chi tiết sản phẩm
-  const [selectedProduct, setSelectedProduct] = useState<any>(
-    demoParam("demo") === "ingredient" ? ALL_PRODUCTS[0] : null,
-  )
+  const [selectedProduct, setSelectedProduct] = useState<any>(null)
 
   // LOGIC LỌC (Filter) TRƯỚC KHI PHÂN TRANG
   const filteredProducts = ALL_PRODUCTS.filter((p) => {
