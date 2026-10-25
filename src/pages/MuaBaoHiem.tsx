@@ -69,7 +69,7 @@ const INSURANCE_PLANS = [
         "TOÀN DIỆN PHẠM VI (Gồm Tai nạn + Bệnh truyền nhiễm).",
         "Bảo hiểm bệnh Ung thư, Bệnh mãn tính (Suy thận, tiểu đường).",
         "Bảo hiểm Bệnh di truyền (nếu tham gia từ khi thú cưng còn nhỏ).",
-        "TẶNG QUYỀN LỢI WELLNESS: Trợ giá cố định 2.000.000đ/năm chi trả cho Tiêm phòng định kỳ, Triệt sản hoặc Cạo vôi răng.",
+        "TẶNG QUYỀN LỢI WELLNESS: Trợ giá cố định 2.000.000đ/năm chi trả cho Tiêm phòng dại/Triệt sản/Cạo vôi răng.",
       ],
       exclusions: [
         "Thẩm mỹ & Làm đẹp (Cắt móng, cắt tai, nhuộm lông, spa...).",
