@@ -188,8 +188,8 @@ export default function CamNangDinhDuong() {
             className="text-[26px] sm:text-3xl md:text-5xl font-black mb-4 text-gray-900 leading-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Cẩm nang dinh dưỡng từ{" "}
-            <span className="text-emerald-600">hồ sơ y tế</span>
+            Cẩm nang dinh dưỡng{" "}
+            <span className="text-emerald-600">từ hồ sơ y tế</span>
           </h1>
           <p className="text-base md:text-lg text-gray-600 px-4 mb-4 max-w-3xl mx-auto leading-relaxed">
             Là thư viện tra cứu độc lập, PetCare+ phân tích hồ sơ bệnh án để đề
