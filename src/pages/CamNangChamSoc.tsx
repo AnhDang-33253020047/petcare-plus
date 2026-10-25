@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { ARTICLES_DATA, ArticleDetail } from "../articlesData"
-import { demoParam } from "../demo"
 
 export default function CamNangChamSoc() {
   const [searchTerm, setSearchTerm] = useState("")
   const [visibleCount, setVisibleCount] = useState(3)
   const [showScrollTop, setShowScrollTop] = useState(false)
-  const [selectedArticle, setSelectedArticle] = useState<ArticleDetail | null>(
-    demoParam("demo") === "article" ? ARTICLES_DATA[0] : null,
-  )
+  const [selectedArticle, setSelectedArticle] = useState<ArticleDetail | null>(null)
 
   useEffect(() => {
     const handleScroll = () => {
