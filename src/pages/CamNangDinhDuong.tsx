@@ -1,29 +1,31 @@
 import { useState } from "react"
+import { demoParam } from "../demo"
 import { PRODUCTS, em, or, orDark } from "../data"
 import { usePet } from "../context/PetContext"
 
-// Bổ sung dữ liệu thành phần dinh dưỡng chi tiết hơn cho các sản phẩm trang 1
-const NUTRITION_PRODUCTS_PAGE_1 = PRODUCTS.map((p) => ({
-  ...p,
-  nutrition: [
-    { label: "Đạm (Protein)", value: "32%" },
-    { label: "Chất béo", value: "15%" },
-    { label: "Chất xơ", value: "3.5%" },
-    { label: "Omega-3 & Omega-6", value: "Dồi dào" },
-    { label: "Canxi", value: "1.2%" },
-    { label: "Photpho", value: "0.9%" },
-    { label: "Taurine", value: "Bổ sung" },
-  ],
-  analysis:
-    "Phù hợp để duy trì cơ bắp săn chắc và phát triển hệ xương khớp khỏe mạnh cho thú cưng đang trong giai đoạn trưởng thành.",
-}))
-
-// Cập nhật sản phẩm trang 2 với thành phần dinh dưỡng phong phú hơn
-const EXTRA_PRODUCTS = [
+// TỔNG HỢP TOÀN BỘ SẢN PHẨM (16 sản phẩm: 8 cũ + 8 mới)
+// (Mình thêm trường 'petType' để hỗ trợ filter: 'dog', 'cat', hoặc 'both')
+const ALL_PRODUCTS = [
+  ...PRODUCTS.map((p) => ({
+    ...p,
+    petType: p.name.toLowerCase().includes("mèo") ? "cat" : "dog",
+    nutrition: [
+      { label: "Đạm (Protein)", value: "32%" },
+      { label: "Chất béo", value: "15%" },
+      { label: "Chất xơ", value: "3.5%" },
+      { label: "Omega-3 & Omega-6", value: "Dồi dào" },
+      { label: "Canxi", value: "1.2%" },
+      { label: "Photpho", value: "0.9%" },
+      { label: "Taurine", value: "Bổ sung" },
+    ],
+    analysis:
+      "Phù hợp để duy trì cơ bắp săn chắc và phát triển hệ xương khớp khỏe mạnh cho thú cưng đang trong giai đoạn trưởng thành.",
+  })),
   {
     name: "Bánh thưởng mềm cho chó vị thịt vịt 170g",
     brand: "Wellness CORE",
     image: "https://m.media-amazon.com/images/I/71oxJJIp-rL.jpg",
+    petType: "dog",
     nutrition: [
       { label: "Đạm (Protein)", value: "20%" },
       { label: "Chất béo", value: "10%" },
@@ -38,6 +40,7 @@ const EXTRA_PRODUCTS = [
     name: "Hạt cho mèo con 2.27kg",
     brand: "Nutrience",
     image: "https://m.media-amazon.com/images/I/61BpA-4N6fL.jpg",
+    petType: "cat",
     nutrition: [
       { label: "Đạm (Protein)", value: "40%" },
       { label: "Chất béo", value: "20%" },
@@ -52,6 +55,7 @@ const EXTRA_PRODUCTS = [
     name: "Pate lon cho chó vị thịt heo 400g",
     brand: "Monge",
     image: "https://images.demas.it/articoli/itemcode/63/00141463/00141463.jpg",
+    petType: "dog",
     nutrition: [
       { label: "Thịt heo tươi", value: "100%" },
       { label: "Đạm (Protein)", value: "8%" },
@@ -66,6 +70,7 @@ const EXTRA_PRODUCTS = [
     name: "Pate thịt bò cao cấp cho mèo triệt sản 85g",
     brand: "Monge",
     image: "https://images.demas.it/articoli/itemcode/70/00133770/00133770.jpg",
+    petType: "cat",
     nutrition: [
       { label: "Đạm (Protein)", value: "10%" },
       { label: "Chất béo", value: "Giảm 30%" },
@@ -80,6 +85,7 @@ const EXTRA_PRODUCTS = [
     name: "Bánh thưởng làm sạch răng cho mèo 50g",
     brand: "Wellness CORE",
     image: "https://m.media-amazon.com/images/I/71ksAmONY6L.jpg",
+    petType: "cat",
     nutrition: [
       { label: "Đạm (Protein)", value: "28%" },
       { label: "Taurine", value: "Bổ sung" },
@@ -94,6 +100,7 @@ const EXTRA_PRODUCTS = [
     brand: "IAMS",
     image:
       "https://i5.walmartimages.com/seo/Iams-Proactive-Health-Adult-Indoor-Weight-Control-Hairball-Control-Dry-Cat-Food-3-5-Lb-Bag_eeda6609-f779-4554-9e85-76012419a430.1eb87e753e8edd24e6391efacf316e31.jpeg",
+    petType: "cat",
     nutrition: [
       { label: "Đạm (Protein)", value: "30%" },
       { label: "Chất xơ tự nhiên", value: "8.5%" },
@@ -108,6 +115,7 @@ const EXTRA_PRODUCTS = [
     name: "Hỗn hợp dầu cá chứa Omega-3 dành cho chó và mèo 251ml",
     brand: "Zesty Paws",
     image: "https://m.media-amazon.com/images/I/61oELRcWptL.jpg",
+    petType: "both",
     nutrition: [
       { label: "Omega-3", value: "Chiết xuất tinh khiết" },
       { label: "EPA", value: "350mg" },
@@ -121,6 +129,7 @@ const EXTRA_PRODUCTS = [
     name: "Bột sữa dê bổ sung vitamin và lợi khuẩn dành cho chó mèo 180g",
     brand: "fera pets",
     image: "https://m.media-amazon.com/images/I/71B6RG+AIOL.jpg",
+    petType: "both",
     nutrition: [
       { label: "Lợi khuẩn (Probiotics)", value: "5 tỷ CFU" },
       { label: "Enzyme tiêu hóa", value: "Tích hợp" },
@@ -133,22 +142,51 @@ const EXTRA_PRODUCTS = [
   },
 ]
 
+// CẤU HÌNH SỐ LƯỢNG SẢN PHẨM TRÊN 1 TRANG
+const ITEMS_PER_PAGE = 4
+
 export default function CamNangDinhDuong() {
   const { activePet } = usePet()
   const [hoveredProduct, setHoveredProduct] = useState<number | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
 
-  // State để quản lý Pop-up chi tiết sản phẩm
-  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  // State quản lý bộ lọc
+  const [filterType, setFilterType] = useState<"all" | "dog" | "cat">("all")
 
-  const displayProducts =
-    currentPage === 1 ? NUTRITION_PRODUCTS_PAGE_1 : EXTRA_PRODUCTS
+  // State để quản lý Pop-up chi tiết sản phẩm
+  const [selectedProduct, setSelectedProduct] = useState<any>(
+    demoParam("demo") === "ingredient" ? ALL_PRODUCTS[0] : null,
+  )
+
+  // LOGIC LỌC (Filter) TRƯỚC KHI PHÂN TRANG
+  const filteredProducts = ALL_PRODUCTS.filter((p) => {
+    if (filterType === "all") return true
+    if (p.petType === "both") return true // Sản phẩm dùng chung (sữa, dầu cá) luôn hiện
+    return p.petType === filterType
+  })
+
+  // LOGIC PHÂN TRANG (Dựa trên danh sách đã lọc)
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const displayProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE,
+  )
+
+  // Hàm tạo mảng số trang [1, 2, 3, 4...]
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1)
+
+  // Xử lý khi đổi filter: reset về trang 1
+  const handleFilterChange = (type: "all" | "dog" | "cat") => {
+    setFilterType(type)
+    setCurrentPage(1)
+  }
 
   return (
     <section className="py-10 md:py-16 bg-slate-50 min-h-screen relative">
       <div className="max-w-[1360px] mx-auto px-4 md:px-8">
         {/* HEADER ĐÃ ĐƯỢC CHỈNH LẠI CONTAINER VÀ LOGIC SUBTEXT */}
-        <div className="mb-12 text-center max-w-4xl mx-auto">
+        <div className="mb-6 text-center max-w-4xl mx-auto">
           <h1
             className="text-[26px] sm:text-3xl md:text-5xl font-black mb-4 text-gray-900 leading-tight"
             style={{ fontFamily: "var(--font-display)" }}
@@ -156,7 +194,7 @@ export default function CamNangDinhDuong() {
             Cẩm nang dinh dưỡng từ{" "}
             <span className="text-emerald-600">hồ sơ y tế</span>
           </h1>
-          <p className="text-base md:text-lg text-gray-600 px-4 mb-6 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-gray-600 px-4 mb-4 max-w-3xl mx-auto leading-relaxed">
             Là thư viện tra cứu độc lập, PetCare+ phân tích hồ sơ bệnh án để đề
             xuất các tiêu chuẩn dinh dưỡng chuẩn y khoa. Qua đó, bạn có thể dễ
             dàng đối chiếu thành phần và tự tin chọn mua thực phẩm tốt hơn cho
@@ -164,8 +202,8 @@ export default function CamNangDinhDuong() {
           </p>
         </div>
 
-        {/* TIÊU ĐỀ LƯỚI SẢN PHẨM */}
-        <div className="mb-8 md:mb-10 flex items-end justify-between border-t border-gray-200 pt-10">
+        {/* TIÊU ĐỀ VÀ BỘ LỌC (Đã bỏ border-t và xích lại gần hơn) */}
+        <div className="mb-6 md:mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <h2
             className="text-2xl md:text-3xl font-black text-gray-900"
             style={{
@@ -175,102 +213,151 @@ export default function CamNangDinhDuong() {
           >
             Gợi ý cho thú cưng của bạn
           </h2>
+
+          {/* COMPONENT LỌC (Filter) */}
+          <div className="flex bg-white rounded-xl p-1 shadow-sm border border-gray-200">
+            <button
+              onClick={() => handleFilterChange("all")}
+              className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-colors ${
+                filterType === "all"
+                  ? "bg-gray-900 text-white shadow-sm"
+                  : "text-gray-500 hover:text-gray-900"
+              }`}
+            >
+              Tất cả
+            </button>
+            <button
+              onClick={() => handleFilterChange("dog")}
+              className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-colors ${
+                filterType === "dog"
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "text-gray-500 hover:text-emerald-600"
+              }`}
+            >
+              Chó
+            </button>
+            <button
+              onClick={() => handleFilterChange("cat")}
+              className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-colors ${
+                filterType === "cat"
+                  ? "bg-orange-500 text-white shadow-sm"
+                  : "text-gray-500 hover:text-orange-500"
+              }`}
+            >
+              Mèo
+            </button>
+          </div>
         </div>
 
-        {/* LƯỚI SẢN PHẨM */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
-          {displayProducts.map((p, i) => {
-            const isHov = hoveredProduct === i
-            return (
-              <div
-                key={i}
-                className="bg-white rounded-2xl overflow-hidden transition-all duration-200 flex flex-col h-full cursor-pointer"
-                style={{
-                  boxShadow: isHov
-                    ? "0 16px 40px rgba(5,150,105,0.13)"
-                    : "0 2px 12px rgba(0,0,0,0.04)",
-                  border: `1px solid ${
-                    isHov ? "rgba(5,150,105,0.18)" : "rgba(0,0,0,0.04)"
-                  }`,
-                  transform: isHov ? "translateY(-4px)" : "translateY(0)",
-                }}
-                onMouseEnter={() => setHoveredProduct(i)}
-                onMouseLeave={() => setHoveredProduct(null)}
-                onClick={() => setSelectedProduct(p)}
-              >
+        {/* LƯỚI SẢN PHẨM (Luôn render 4 cột) */}
+        {displayProducts.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+            {displayProducts.map((p, i) => {
+              const isHov = hoveredProduct === i
+              return (
                 <div
-                  className="relative overflow-hidden bg-gray-100"
-                  style={{ aspectRatio: "1 / 1" }}
+                  key={i}
+                  className="bg-white rounded-2xl overflow-hidden transition-all duration-200 flex flex-col h-full cursor-pointer"
+                  style={{
+                    boxShadow: isHov
+                      ? "0 16px 40px rgba(5,150,105,0.13)"
+                      : "0 2px 12px rgba(0,0,0,0.04)",
+                    border: `1px solid ${
+                      isHov ? "rgba(5,150,105,0.18)" : "rgba(0,0,0,0.04)"
+                    }`,
+                    transform: isHov ? "translateY(-4px)" : "translateY(0)",
+                  }}
+                  onMouseEnter={() => setHoveredProduct(i)}
+                  onMouseLeave={() => setHoveredProduct(null)}
+                  onClick={() => setSelectedProduct(p)}
                 >
-                  <img
-                    src={p.image}
-                    alt={p.name}
-                    className="w-full h-full object-cover transition-transform duration-300"
-                    style={{
-                      transform: isHov ? "scale(1.06)" : "scale(1)",
-                      mixBlendMode: "multiply",
-                    }}
-                  />
-                </div>
-
-                <div className="p-4 flex flex-col flex-grow">
-                  <div className="text-sm text-orange-500 font-bold mb-1.5 tracking-wide">
-                    {p.brand}
-                  </div>
-                  <h3
-                    className="text-[18px] md:text-[20px] font-bold text-gray-900 mb-3 leading-snug line-clamp-2"
-                    style={{ fontFamily: "var(--font-display)" }}
+                  <div
+                    className="relative overflow-hidden bg-gray-100"
+                    style={{ aspectRatio: "1 / 1" }}
                   >
-                    {p.name}
-                  </h3>
+                    <img
+                      src={p.image}
+                      alt={p.name}
+                      className="w-full h-full object-cover transition-transform duration-300"
+                      style={{
+                        transform: isHov ? "scale(1.06)" : "scale(1)",
+                        mixBlendMode: "multiply",
+                      }}
+                    />
+                  </div>
 
-                  {/* Hiển thị tóm tắt 2 thành phần chính ngoài thẻ lưới */}
-                  <div className="mt-auto space-y-2 border-t border-gray-100 pt-3">
-                    {p.nutrition.slice(0, 2).map((nutri: any, idx: number) => (
-                      <div key={idx} className="flex justify-between text-sm">
-                        <span className="text-gray-500">{nutri.label}</span>
-                        <span className="font-semibold text-gray-800">
-                          {nutri.value}
-                        </span>
-                      </div>
-                    ))}
+                  <div className="p-4 flex flex-col flex-grow">
+                    <div className="text-sm text-orange-500 font-bold mb-1.5 tracking-wide">
+                      {p.brand}
+                    </div>
+                    <h3
+                      className="text-[18px] md:text-[20px] font-bold text-gray-900 mb-3 leading-snug line-clamp-2"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      {p.name}
+                    </h3>
+
+                    {/* Hiển thị tóm tắt 2 thành phần chính ngoài thẻ lưới */}
+                    <div className="mt-auto space-y-2 border-t border-gray-100 pt-3">
+                      {p.nutrition
+                        .slice(0, 2)
+                        .map((nutri: any, idx: number) => (
+                          <div
+                            key={idx}
+                            className="flex justify-between text-sm"
+                          >
+                            <span className="text-gray-500">{nutri.label}</span>
+                            <span className="font-semibold text-gray-800">
+                              {nutri.value}
+                            </span>
+                          </div>
+                        ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )
-          })}
-        </div>
+              )
+            })}
+          </div>
+        ) : (
+          <div className="py-20 text-center bg-white rounded-2xl border border-gray-100 shadow-sm">
+            <p className="text-gray-500 text-lg">
+              Không tìm thấy sản phẩm nào phù hợp với bộ lọc hiện tại.
+            </p>
+          </div>
+        )}
 
-        {/* PHÂN TRANG */}
-        <div
-          className="flex justify-center items-center gap-2 mt-10"
-          style={{ paddingBottom: 72 }}
-        >
-          {[1, 2].map((n) => {
-            const isActive = n === currentPage
-            return (
-              <button
-                key={n}
-                onClick={() => {
-                  setCurrentPage(n)
-                  window.scrollTo({ top: 300, behavior: "smooth" })
-                }}
-                className="w-10 h-10 rounded-xl text-sm font-bold transition-all hover:bg-white"
-                style={{
-                  background: isActive ? "#059669" : "transparent",
-                  color: isActive ? "#fff" : "#6b7280",
-                  border: isActive ? "none" : "1.5px solid #d1d5db",
-                  fontFamily: "var(--font-display)",
-                  boxShadow: isActive
-                    ? "0 4px 14px rgba(5,150,105,0.3)"
-                    : "none",
-                }}
-              >
-                {n}
-              </button>
-            )
-          })}
-        </div>
+        {/* PHÂN TRANG ĐỘNG TỰ TẠO SỐ NÚT DỰA VÀO TỔNG SỐ TRANG */}
+        {totalPages > 1 && (
+          <div
+            className="flex justify-center items-center gap-2 mt-10"
+            style={{ paddingBottom: 72 }}
+          >
+            {pageNumbers.map((n) => {
+              const isActive = n === currentPage
+              return (
+                <button
+                  key={n}
+                  onClick={() => {
+                    setCurrentPage(n)
+                    window.scrollTo({ top: 300, behavior: "smooth" })
+                  }}
+                  className="w-10 h-10 rounded-xl text-sm font-bold transition-all hover:bg-white"
+                  style={{
+                    background: isActive ? "#059669" : "transparent",
+                    color: isActive ? "#fff" : "#6b7280",
+                    border: isActive ? "none" : "1.5px solid #d1d5db",
+                    fontFamily: "var(--font-display)",
+                    boxShadow: isActive
+                      ? "0 4px 14px rgba(5,150,105,0.3)"
+                      : "none",
+                  }}
+                >
+                  {n}
+                </button>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       {/* POP-UP (MODAL) HIỂN THỊ CHI TIẾT DINH DƯỠNG (ĐÃ TỐI ƯU GIAO DIỆN MOBILE) */}
