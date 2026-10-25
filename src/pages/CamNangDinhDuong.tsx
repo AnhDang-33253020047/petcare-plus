@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { demoParam } from "../demo"
 import { PRODUCTS, em, or, orDark } from "../data"
 import { usePet } from "../context/PetContext"
 
@@ -153,7 +154,9 @@ export default function CamNangDinhDuong() {
   const [filterType, setFilterType] = useState<"all" | "dog" | "cat">("all")
 
   // State để quản lý Pop-up chi tiết sản phẩm
-  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  const [selectedProduct, setSelectedProduct] = useState<any>(
+    demoParam("demo") === "ingredient" ? ALL_PRODUCTS[0] : null,
+  )
 
   // LOGIC LỌC (Filter) TRƯỚC KHI PHÂN TRANG
   const filteredProducts = ALL_PRODUCTS.filter((p) => {
@@ -212,10 +215,10 @@ export default function CamNangDinhDuong() {
           </h2>
 
           {/* COMPONENT LỌC (Filter) */}
-          <div className="flex bg-white rounded-xl p-1 shadow-sm border border-gray-200">
+          <div className="flex w-full sm:w-auto bg-white rounded-xl p-1 shadow-sm border border-gray-200">
             <button
               onClick={() => handleFilterChange("all")}
-              className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-colors ${
+              className={`flex-1 sm:flex-none justify-center text-center px-4 py-1.5 text-sm font-bold rounded-lg transition-colors ${
                 filterType === "all"
                   ? "bg-gray-900 text-white shadow-sm"
                   : "text-gray-500 hover:text-gray-900"
@@ -225,7 +228,7 @@ export default function CamNangDinhDuong() {
             </button>
             <button
               onClick={() => handleFilterChange("dog")}
-              className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-colors ${
+              className={`flex-1 sm:flex-none justify-center text-center px-4 py-1.5 text-sm font-bold rounded-lg transition-colors ${
                 filterType === "dog"
                   ? "bg-emerald-600 text-white shadow-sm"
                   : "text-gray-500 hover:text-emerald-600"
@@ -235,7 +238,7 @@ export default function CamNangDinhDuong() {
             </button>
             <button
               onClick={() => handleFilterChange("cat")}
-              className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-colors ${
+              className={`flex-1 sm:flex-none justify-center text-center px-4 py-1.5 text-sm font-bold rounded-lg transition-colors ${
                 filterType === "cat"
                   ? "bg-orange-500 text-white shadow-sm"
                   : "text-gray-500 hover:text-orange-500"
